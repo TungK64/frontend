@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/screen/account/account_screen.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
 import 'package:frontend/screen/home/bloc/home_bloc.dart';
+import 'package:frontend/screen/setting/setting_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -22,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Color accountIconColor = Colors.black;
 
   @override
-  Widget build(Object context) {
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HomeBloc()..add(HomeInitialEvent()),
       child: Builder(
@@ -49,25 +51,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 60,
                   height: 60,
                 ),
-                const Text(
-                  "pHUST",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
-                ),
-                const Row(
+                homePointer
+                    ? Text(
+                        "pHUST",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        "Account Information",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.notifications,
                       color: Colors.white,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
-                    Icon(
-                      Icons.settings,
-                      color: Colors.white,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return SettingScreen();
+                            },
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                      ),
                     )
                   ],
                 )
@@ -199,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     )
-                  : Container();
+                  : AccountScreen();
             },
           ),
         ),
