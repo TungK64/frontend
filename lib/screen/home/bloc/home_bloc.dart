@@ -24,13 +24,44 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       String uri =
-          "http://127.0.0.1:8080/api/v1/get-project/${prefs.getString(USER_NUMBER)}";
+          "http://192.168.98.179:8080/api/v1/get-project/${prefs.getString(USER_NUMBER)}";
       final url = Uri.parse(uri);
 
       final response = await http.get(url);
 
-      List<Map<String, dynamic>> jsonResponse = jsonDecode(response.body);
-      state.items = jsonResponse;
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse =
+            jsonDecode(utf8.decode(response.bodyBytes));
+        state.items = jsonResponse;
+        List<dynamic> lecNumber = [];
+        for (int i = 0; i < jsonResponse.length; i++) {
+          if (jsonResponse[i]['lectureNumber'] != null) {
+            lecNumber.add(jsonResponse[i]['lectureNumber']);
+          }
+        }
+        if (lecNumber.isNotEmpty) {
+          String lecNumberString = lecNumber.join(',');
+          final getNameUrl = Uri.parse(
+              "http://192.168.98.179:8080/api/v1/get-lectures-name/number?list=$lecNumberString");
+
+          final getNameResponse = await http.get(getNameUrl);
+
+          if (getNameResponse.statusCode == 200) {
+            List<dynamic> jsonGetNameResponse =
+                jsonDecode(utf8.decode(getNameResponse.bodyBytes));
+            for (var name in jsonGetNameResponse) {
+              if (name is String) {
+                state.lecName.add(name);
+              }
+            }
+          } else {
+            state.lecName = [];
+          }
+        }
+      } else {
+        state.items = [];
+      }
+
       emit(state.clone(HomeStatus.initial));
     });
   }
