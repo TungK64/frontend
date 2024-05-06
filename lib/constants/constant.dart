@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 const String ROLE = 'role';
 const String USER_NUMBER = 'user_number';
+const String PROJECT_ID = 'project_id';
+
+const String HOST = 'http://192.168.98.179:8080/api/v1/';
 
 const SUPPORT_LANGUAGES = [
   Locale('en', 'US'),

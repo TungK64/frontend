@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
         alertString = "Please fill in all information";
       });
     } else {
-      final url = Uri.parse("http://192.168.98.179:8080/api/v1/login");
+      final url = Uri.parse("${HOST}login");
       Map<String, dynamic> jsonData = {'email': email, 'password': password};
       String jsonBody = jsonEncode(jsonData);
 

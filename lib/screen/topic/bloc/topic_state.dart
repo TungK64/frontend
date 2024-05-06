@@ -5,7 +5,7 @@ enum TopicStatus { initial, loading, changeScreen }
 class TopicState {
   List<dynamic> topicList = [];
   dynamic topic;
-  late String role;
+  String? role;
   TopicStatus status = TopicStatus.initial;
 
   TopicState clone(TopicStatus status) {

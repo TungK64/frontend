@@ -23,8 +23,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.clone(HomeStatus.loading));
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      String uri =
-          "http://192.168.98.179:8080/api/v1/get-project/${prefs.getString(USER_NUMBER)}";
+      String uri = "${HOST}get-project/${prefs.getString(USER_NUMBER)}";
       final url = Uri.parse(uri);
 
       final response = await http.get(url);
@@ -42,7 +41,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (lecNumber.isNotEmpty) {
           String lecNumberString = lecNumber.join(',');
           final getNameUrl = Uri.parse(
-              "http://192.168.98.179:8080/api/v1/get-lectures-name/number?list=$lecNumberString");
+              "${HOST}get-lectures-name/number?list=$lecNumberString");
 
           final getNameResponse = await http.get(getNameUrl);
 

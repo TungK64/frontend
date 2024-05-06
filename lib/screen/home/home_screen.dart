@@ -2,10 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/account/account_screen.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
 import 'package:frontend/screen/home/bloc/home_bloc.dart';
 import 'package:frontend/screen/setting/setting_screen.dart';
+import 'package:frontend/screen/topic/topic_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -149,7 +152,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemBuilder: (context, index) {
                               if (!iconClick) {
                                 return GestureDetector(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setString(PROJECT_ID,
+                                        state.items[index]['projectId']);
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return TopicScreen();
+                                    }));
+                                  },
                                   child: Column(
                                     children: [
                                       const SizedBox(
