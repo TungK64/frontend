@@ -134,7 +134,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         prefs.setString(ROLE, jsonResponse['role']);
         prefs.setString(USER_NUMBER, jsonResponse['userNumber']);
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
           return HomeScreen();
         }));
       } else if (response.statusCode == 400) {

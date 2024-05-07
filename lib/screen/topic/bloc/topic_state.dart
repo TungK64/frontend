@@ -4,6 +4,7 @@ enum TopicStatus { initial, loading, changeScreen }
 
 class TopicState {
   List<dynamic> topicList = [];
+  List<dynamic> studentList = [];
   dynamic topic;
   String? role;
   TopicStatus status = TopicStatus.initial;
@@ -14,6 +15,7 @@ class TopicState {
     state.topic = topic;
     state.topicList = topicList;
     state.role = role;
+    state.studentList = studentList;
     return state;
   }
 }

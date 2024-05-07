@@ -46,6 +46,18 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
         } else {
           state.topic = null;
         }
+      } else {
+        final urlGetStudentList =
+            Uri.parse("${HOST}get-student-by-projectId/${projectId}/Student");
+
+        final getStudentList = await http.get(urlGetStudentList);
+        if (getStudentList.statusCode == 200) {
+          List<dynamic> studentList =
+              jsonDecode(utf8.decode(getStudentList.bodyBytes));
+          state.studentList = studentList;
+        } else {
+          state.studentList = [];
+        }
       }
 
       emit(state.clone(TopicStatus.initial));

@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
+import 'package:frontend/screen/student_in_topic/StudentListOfTopic.dart';
 import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
+import 'package:http/http.dart' as http;
 
 class TopicScreen extends StatefulWidget {
   @override
@@ -48,7 +53,32 @@ class _TopicScreenState extends State<TopicScreen> {
                   "topic".tr(),
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 22),
-                )
+                ),
+                const Spacer(),
+                if (topicText == Colors.red)
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.blue)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.add_circle_outline,
+                              size: 28,
+                              color: Colors.red,
+                            ),
+                            Text(
+                              "Tạo đề tài".tr(),
+                              style: const TextStyle(fontSize: 16),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
               ],
             ),
           ),
@@ -229,48 +259,135 @@ class _TopicScreenState extends State<TopicScreen> {
                     builder: (context, state) {
                       if (topicText == Colors.red) {
                         return ListView.builder(
-                            itemCount: state.topicList.length + 1,
-                            itemBuilder: (context, index) {
-                              if (index < state.topicList.length) {
-                                return GestureDetector(
-                                  onTap: () {},
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 15, right: 15, bottom: 20),
-                                    child: Container(
-                                      height: 80,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.grey.shade300),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          Image.asset(
-                                            "assets/images/topics/topic-logo${index + 1}.png",
-                                            width: 65,
-                                            height: 65,
-                                          ),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          Text(state.topicList[index]
-                                              ['topicName'])
-                                        ],
+                          itemCount: state.topicList.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () async {
+                                final urlGetStudentTopic = Uri.parse(
+                                    "${HOST}/get-student-in-topic/${state.topicList[index]['topicId']}");
+                                final studentListOfTopic =
+                                    await http.get(urlGetStudentTopic);
+                                if (studentListOfTopic.statusCode == 200) {
+                                  List<dynamic> studentList = jsonDecode(utf8
+                                      .decode(studentListOfTopic.bodyBytes));
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return StudentListOfTopic(
+                                        studentList, state.topicList[index]);
+                                  }));
+                                } else {
+                                  return null;
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 15, right: 15, bottom: 20),
+                                child: Container(
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.grey.shade300),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        width: 20,
                                       ),
-                                    ),
+                                      Image.asset(
+                                        "assets/images/topics/topic-logo${index + 1}.png",
+                                        width: 65,
+                                        height: 65,
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        state.topicList[index]['topicName'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      )
+                                    ],
                                   ),
-                                );
-                              }
-                            });
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       } else {
-                        return Container();
+                        return ListView.builder(
+                          itemCount: state.studentList.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {},
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 15, right: 15, bottom: 20),
+                                child: Container(
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.grey.shade300),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Image.asset(
+                                        "assets/images/avatar_default.jpg",
+                                        width: 65,
+                                        height: 65,
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 20),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "${state.studentList[index]['userName']} - ${state.studentList[index]["userNumber"]}",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "Đề tài: ".tr(),
+                                                  style:
+                                                      TextStyle(fontSize: 15),
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                state.topic != null
+                                                    ? (state.topic["topicName"])
+                                                    : Text("")
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       }
                     },
                   ))
