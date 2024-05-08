@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
 import 'package:frontend/screen/student_in_topic/StudentListOfTopic.dart';
 import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TopicScreen extends StatefulWidget {
   @override
@@ -18,6 +20,9 @@ class _TopicScreenState extends State<TopicScreen> {
   late TopicBloc bloc;
   Color topicText = Colors.red;
   Color studentText = Colors.black;
+  final TextEditingController topicNameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  String alertText = "";
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +62,214 @@ class _TopicScreenState extends State<TopicScreen> {
                 const Spacer(),
                 if (topicText == Colors.red)
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15)),
+                                height: 300,
+                                width: 300,
+                                child: Column(children: [
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "Tạo đề tài".tr(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Container(
+                                    color: Colors.red,
+                                    height: 0.8,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 20, left: 15, right: 15),
+                                    child: Column(children: [
+                                      TextField(
+                                        onChanged: (value) {
+                                          setState(() {
+                                            alertText = "";
+                                          });
+                                        },
+                                        controller: topicNameController,
+                                        decoration: InputDecoration(
+                                            labelText: "Tên đề tài".tr()),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextField(
+                                        controller: descriptionController,
+                                        decoration: InputDecoration(
+                                            labelText: "mô tả".tr()),
+                                      ),
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      Text(
+                                        alertText,
+                                        style: const TextStyle(
+                                            color: Colors.red, fontSize: 17),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          ElevatedButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateColor
+                                                        .resolveWith(
+                                                  (states) {
+                                                    return Colors.white;
+                                                  },
+                                                ),
+                                                side: MaterialStateBorderSide
+                                                    .resolveWith(
+                                                  (states) {
+                                                    return const BorderSide(
+                                                        color: Colors.red);
+                                                  },
+                                                ),
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(
+                                                "Cancel".tr(),
+                                                style: const TextStyle(
+                                                    color: Colors.red),
+                                              )),
+                                          ElevatedButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateColor
+                                                        .resolveWith(
+                                                  (states) {
+                                                    return Colors.white;
+                                                  },
+                                                ),
+                                                side: MaterialStateBorderSide
+                                                    .resolveWith(
+                                                  (states) {
+                                                    return const BorderSide(
+                                                        color: Colors.blue);
+                                                  },
+                                                ),
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                              ),
+                                              onPressed: () async {
+                                                String topicName =
+                                                    topicNameController.text;
+                                                String topicDescription =
+                                                    descriptionController.text;
+                                                if (topicName.isEmpty) {
+                                                  setState(() {
+                                                    alertText =
+                                                        "Please fill in all information"
+                                                            .tr();
+                                                  });
+                                                } else {
+                                                  Map<String, dynamic>
+                                                      jsonData = {
+                                                    'topicName': topicName,
+                                                    'description':
+                                                        topicDescription
+                                                  };
+                                                  String jsonBody =
+                                                      jsonEncode(jsonData);
+                                                  SharedPreferences prefs =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  String? projectId = prefs
+                                                      .getString(PROJECT_ID);
+                                                  final createTopicUrl = Uri.parse(
+                                                      "${HOST}create-topic/$projectId");
+                                                  final response = await http
+                                                      .post(createTopicUrl,
+                                                          headers: {
+                                                            "Content-Type":
+                                                                "application/json"
+                                                          },
+                                                          body: jsonBody);
+                                                  if (response.statusCode ==
+                                                      201) {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close current dialog
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return AlertDialog(
+                                                          title:
+                                                              Text("Success"),
+                                                          content: Text(
+                                                              "Topic created successfully!"),
+                                                          actions: [
+                                                            ElevatedButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              },
+                                                              child: Text("OK"),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                    TopicBloc()
+                                                      ..add(
+                                                          TopicInitialEvent());
+                                                  } else {
+                                                    setState(() {
+                                                      alertText = response.body;
+                                                    });
+                                                  }
+                                                }
+                                              },
+                                              child: Text("Create".tr(),
+                                                  style: const TextStyle(
+                                                      color: Colors.lightBlue)))
+                                        ],
+                                      )
+                                    ]),
+                                  )
+                                ]),
+                              ),
+                            );
+                          });
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(width: 1, color: Colors.blue)),
@@ -264,7 +476,7 @@ class _TopicScreenState extends State<TopicScreen> {
                             return GestureDetector(
                               onTap: () async {
                                 final urlGetStudentTopic = Uri.parse(
-                                    "${HOST}/get-student-in-topic/${state.topicList[index]['topicId']}");
+                                    "${HOST}get-student-in-topic/${state.topicList[index]['topicId']}");
                                 final studentListOfTopic =
                                     await http.get(urlGetStudentTopic);
                                 if (studentListOfTopic.statusCode == 200) {

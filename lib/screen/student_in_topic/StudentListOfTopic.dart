@@ -78,7 +78,7 @@ class _StudentListState extends State<StudentListOfTopic> {
               bloc: bloc,
               builder: (context, state) {
                 return ListView.builder(
-                  itemCount: state.topicList.length,
+                  itemCount: studentList.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () async {},
