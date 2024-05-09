@@ -1,7 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/account/bloc/account_bloc.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
+import 'package:frontend/screen/login/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountScreen extends StatefulWidget {
   @override
@@ -83,7 +87,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 height: 5,
                               ),
                               Text(
-                                "Sđt: ${state.items['phoneNumber']}",
+                                "${"phone_number".tr()}: ${state.items['phoneNumber']}",
                                 style: TextStyle(fontSize: 14),
                               ),
                               const SizedBox(
@@ -131,7 +135,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Mã số:"),
+                                      Text("${"code".tr()}: "),
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -164,7 +168,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Ngày sinh:"),
+                                      Text("${"date_of_birth".tr()}: "),
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -201,13 +205,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Vai trò:"),
+                                      Text("${"role".tr()}: "),
                                       const SizedBox(
                                         height: 10,
                                       ),
                                       if (state.items.isNotEmpty)
                                         Text(
-                                          state.items['role'],
+                                          state.items['role'].toString().tr(),
                                           style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
@@ -234,7 +238,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Số điện thoại:"),
+                                      Text("${"phone_number".tr()}: "),
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -269,27 +273,61 @@ class _AccountScreenState extends State<AccountScreen> {
                                         width: 0.6, color: Colors.black),
                                   ),
                                 ),
-                                child: const Column(
+                                child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Trường:"),
+                                    Text("${"university".tr()}: "),
                                     SizedBox(
                                       height: 10,
                                     ),
                                     Text(
-                                      "Đại học Bách Khoa Hà Nội",
+                                      "HUST".tr(),
                                       style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     SizedBox(
                                       height: 10,
-                                    )
+                                    ),
                                   ],
                                 ),
                               ))
                             ],
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: GestureDetector(
+                              onTap: () async {
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString(USER_NUMBER, "");
+                                prefs.setString(PROJECT_ID, "");
+                                prefs.setString(ROLE, "");
+                                Navigator.pushReplacement(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return LoginScreen();
+                                }));
+                              },
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(
+                                        width: 2, color: Colors.red)),
+                                child: Center(
+                                    child: Text(
+                                  "log_out".tr(),
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                )),
+                              ),
+                            ),
                           )
                         ],
                       ),

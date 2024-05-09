@@ -84,14 +84,14 @@ class SettingScreen extends StatelessWidget {
                             const Spacer(),
                             DropdownButtonHideUnderline(
                               child: DropdownButton<Locale>(
-                                // value: EasyLocalization.of(context)!.locale,
+                                value: EasyLocalization.of(context)!.locale,
                                 onChanged: (value) async {
                                   final prefs =
                                       await SharedPreferences.getInstance();
                                   await prefs.setString(
                                       'selectedLocale', value.toString());
-                                  // EasyLocalization.of(context)!
-                                  //     .setLocale(value!);
+                                  EasyLocalization.of(context)!
+                                      .setLocale(value!);
                                 },
                                 borderRadius: BorderRadius.circular(15),
                                 dropdownColor: Colors.white70,
