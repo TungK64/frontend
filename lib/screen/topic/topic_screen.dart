@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
 import 'package:frontend/screen/student_in_topic/StudentListOfTopic.dart';
+import 'package:frontend/screen/task/TaskScreen.dart';
 import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -84,7 +85,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                           height: 10,
                                         ),
                                         Text(
-                                          "Tạo đề tài".tr(),
+                                          "create_topic".tr(),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 20),
@@ -108,7 +109,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                               },
                                               controller: topicNameController,
                                               decoration: InputDecoration(
-                                                  labelText: "Tên đề tài".tr()),
+                                                  labelText: "topic_name".tr()),
                                             ),
                                             const SizedBox(
                                               height: 10,
@@ -116,7 +117,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                             TextField(
                                               controller: descriptionController,
                                               decoration: InputDecoration(
-                                                  labelText: "mô tả".tr()),
+                                                  labelText: "description".tr()),
                                             ),
                                             const SizedBox(
                                               height: 30,
@@ -253,9 +254,9 @@ class _TopicScreenState extends State<TopicScreen> {
                                                                     context) {
                                                               return AlertDialog(
                                                                 title: Text(
-                                                                    "Success"),
+                                                                    "Success".tr()),
                                                                 content: Text(
-                                                                    "Topic created successfully!"),
+                                                                    "Topic created successfully".tr()),
                                                                 actions: [
                                                                   ElevatedButton(
                                                                     onPressed:
@@ -308,7 +309,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                     color: Colors.red,
                                   ),
                                   Text(
-                                    "Tạo đề tài".tr(),
+                                    "create_topic".tr(),
                                     style: const TextStyle(fontSize: 16),
                                   )
                                 ],
@@ -360,9 +361,9 @@ class _TopicScreenState extends State<TopicScreen> {
                                       showDialog(
                                         context: context,
                                         builder: (context) => AlertDialog(
-                                          title: Text('Đăng ký đề tài'.tr()),
+                                          title: Text('register_topic'.tr()),
                                           content: Text(
-                                              'Xác nhận đăng ký đề tài'.tr()),
+                                              'Confirm topic registration'.tr()),
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () =>
@@ -398,9 +399,9 @@ class _TopicScreenState extends State<TopicScreen> {
                                                     builder:
                                                         (BuildContext context) {
                                                       return AlertDialog(
-                                                        title: Text("Success"),
+                                                        title: Text("Success".tr()),
                                                         content: Text(
-                                                            "Register Topic successfully!"),
+                                                            "Register Topic successfully".tr()),
                                                         actions: [
                                                           ElevatedButton(
                                                             onPressed: () {
@@ -467,12 +468,12 @@ class _TopicScreenState extends State<TopicScreen> {
                                                         height: 20,
                                                       ),
                                                       Text(
-                                                          "${"Mô tả: ".tr()} ${state.topicList[index]['description'] ?? " "}"),
+                                                          "${"description".tr()} : ${state.topicList[index]['description'] ?? " "}"),
                                                       const SizedBox(
                                                         height: 20,
                                                       ),
                                                       Text(
-                                                          "${"Số lượng: "} ${state.topicList[index]['studentList'] != null ? state.topicList[index]['studentList'].length : 0}")
+                                                          "${"amount".tr()} : ${state.topicList[index]['studentList'] != null ? state.topicList[index]['studentList'].length : 0}")
                                                     ],
                                                   ),
                                                 ),
@@ -541,7 +542,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                         height: 10,
                                       ),
                                       Text(
-                                        "Đề xuất đề tài".tr(),
+                                        "Suggested topic".tr(),
                                         style: TextStyle(fontSize: 20),
                                       )
                                     ])),
@@ -554,28 +555,37 @@ class _TopicScreenState extends State<TopicScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(
                             top: 30, left: 15, right: 15, bottom: 20),
-                        child: Container(
-                          height: 80,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.grey.shade300),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Image.asset(
-                                "assets/images/topics/topic.png",
-                                width: 65,
-                                height: 65,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Text(state.topic['topicName'])
-                            ],
+                        child: GestureDetector(
+                          onTap: () async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            prefs.setString(TOPIC_ID, state.topic['topicId']);
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                              return TaskScreen();
+                            }));
+                          },
+                          child: Container(
+                            height: 80,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.grey.shade300),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Image.asset(
+                                  "assets/images/topics/topic.png",
+                                  width: 65,
+                                  height: 65,
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Text(state.topic['topicName'])
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -598,7 +608,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                     height: 40,
                                     child: Center(
                                         child: Text(
-                                      "DS đề tài".tr(),
+                                      "topic_list".tr(),
                                       style: TextStyle(
                                           fontSize: 18, color: topicText),
                                     )),
@@ -617,7 +627,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                     height: 40,
                                     child: Center(
                                         child: Text(
-                                      "DS sinh viên".tr(),
+                                      "student_list".tr(),
                                       style: TextStyle(
                                           fontSize: 18, color: studentText),
                                     )),
@@ -710,12 +720,12 @@ class _TopicScreenState extends State<TopicScreen> {
                                                               height: 20,
                                                             ),
                                                             Text(
-                                                                "${"Mô tả: ".tr()} ${state.topicList[index]['description'] ?? " "}"),
+                                                                "${"description".tr()} : ${state.topicList[index]['description'] ?? " "}"),
                                                             const SizedBox(
                                                               height: 20,
                                                             ),
                                                             Text(
-                                                                "${"Số lượng: "} ${state.topicList[index]['studentList'] != null ? state.topicList[index]['studentList'].length : 0}")
+                                                                "${"amount"} : ${state.topicList[index]['studentList'] != null ? state.topicList[index]['studentList'].length : 0}")
                                                           ],
                                                         ),
                                                       ),
@@ -816,7 +826,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                     Row(
                                                       children: [
                                                         Text(
-                                                          "Đề tài: ".tr(),
+                                                          "topic".tr() + " :",
                                                           style: TextStyle(
                                                               fontSize: 15),
                                                         ),

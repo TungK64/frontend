@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/constants/constant.dart';
@@ -63,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       )
                     : Text(
-                        "Account Information",
+                        "account_info".tr(),
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -112,9 +113,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
               if (state.items.isEmpty || state.lecName.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    "Bạn chưa đăng ký vào lớp nào hoặc hệ thống chưa cập nhật, vui lòng quay lại sau",
+                    "not_register_yet".tr(),
                     style: TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
@@ -135,9 +136,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Icon(
                                     iconClick ? iconArrowRight : iconArrowDown),
-                                const Text(
-                                  "Class",
-                                  style: TextStyle(
+                                Text(
+                                  "Class".tr(),
+                                  style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 )
@@ -263,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: homeIconColor,
                       ),
                       Text(
-                        "Home",
+                        "Home".tr(),
                         style: TextStyle(fontSize: 14, color: homeIconColor),
                       )
                     ],
@@ -285,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: accountIconColor,
                       ),
                       Text(
-                        "Account",
+                        "Account".tr(),
                         style: TextStyle(fontSize: 14, color: accountIconColor),
                       )
                     ],

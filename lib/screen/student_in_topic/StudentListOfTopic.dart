@@ -2,7 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/constants/constant.dart';
+import 'package:frontend/screen/task/TaskScreen.dart';
 import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentListOfTopic extends StatefulWidget {
   List<dynamic> studentList;
@@ -81,7 +84,13 @@ class _StudentListState extends State<StudentListOfTopic> {
                   itemCount: studentList.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      onTap: () async {},
+                      onTap: () async {
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setString(STUDENT_NUMBER, state.studentList[index]['userNumber']);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return TaskScreen();
+                        }));
+                      },
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 15, right: 15, bottom: 20),

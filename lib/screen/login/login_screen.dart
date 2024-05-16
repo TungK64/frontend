@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/home/home_screen.dart';
@@ -78,13 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     alertString = "";
                   });
                 },
-                decoration: const InputDecoration(
-                    labelText: "Password", hintText: "Nhập mật khẩu"),
+                decoration: InputDecoration(
+                    labelText: "Password", hintText: "enter_pass".tr()),
                 obscureText: true,
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 15,
             ),
             Text(
               alertString,
@@ -105,8 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Size(250, 40),
                 ),
               ),
-              child: const Text(
-                "Login",
+              child: Text(
+                "Login".tr(),
                 style: TextStyle(color: Colors.black),
               ),
             )
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = passwordController.text;
     if (email.isEmpty || password.isEmpty) {
       setState(() {
-        alertString = "Please fill in all information";
+        alertString = "Please fill in all information".tr();
       });
     } else {
       final url = Uri.parse("${HOST}login");

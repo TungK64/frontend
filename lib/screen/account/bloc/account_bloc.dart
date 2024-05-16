@@ -24,7 +24,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       String? userNumber = prefs.getString(USER_NUMBER);
 
       final url = Uri.parse(
-          "http://192.168.98.179:8080/api/v1/get-user/$userNumber/$role");
+          "${HOST}get-user/$userNumber/$role");
 
       final response = await http.get(url);
 

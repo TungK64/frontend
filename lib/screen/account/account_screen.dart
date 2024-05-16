@@ -174,7 +174,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                       ),
                                       if (state.items.isNotEmpty)
                                         Text(
-                                          state.items['userNumber'],
+                                          state.items['dateOfBirth'],
                                           style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
@@ -307,6 +307,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                 prefs.setString(USER_NUMBER, "");
                                 prefs.setString(PROJECT_ID, "");
                                 prefs.setString(ROLE, "");
+                                prefs.setString(TOPIC_ID, "");
+                                prefs.setString(STUDENT_NUMBER, "");
                                 Navigator.pushReplacement(context,
                                     MaterialPageRoute(builder: (context) {
                                   return LoginScreen();

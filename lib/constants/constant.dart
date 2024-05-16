@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 const String ROLE = 'role';
 const String USER_NUMBER = 'user_number';
 const String PROJECT_ID = 'project_id';
+const String TOPIC_ID = 'topic_id';
+const String STUDENT_NUMBER = 'student_number';
 
-const String HOST = 'http://192.168.98.179:8080/api/v1/';
+const String HOST = 'http://172.18.192.1:8080/api/v1/';
 
 const SUPPORT_LANGUAGES = [
   Locale('en', 'US'),
