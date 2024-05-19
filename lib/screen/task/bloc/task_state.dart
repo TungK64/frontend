@@ -1,6 +1,6 @@
 part of 'task_bloc.dart';
 
-enum TaskStatus { initial, loading, changeScreen }
+enum TaskStatus { initial, loading, changeScreen, dragTask }
 
 class TaskState {
   List<dynamic> items = [];

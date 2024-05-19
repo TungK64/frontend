@@ -139,58 +139,93 @@ class _TaskColumnState extends State<TaskColumn> {
             items = [];
         }
 
-        return SizedBox(
-          width: 300,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.taskStatus.tr(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                const SizedBox(height: 10),
-                if (items.isEmpty)
-                  Container()
-                else
-                  ListView.builder(
-                    shrinkWrap: true,  // Added to avoid infinite height error
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      String displayText;
-                      switch (widget.taskStatus) {
-                        case 'To-do':
-                          displayText = items[index]['taskName'];
-                          break;
-                        case 'On progress':
-                          displayText = items[index]['taskName'];
-                          break;
-                        case 'Done':
-                          displayText = items[index]['taskName'];
-                          break;
-                        default:
-                          displayText = '';
-                      }
-                      return Container(
-                        height: 80,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(width: 1, color: Colors.grey),
-                          color: Colors.lightBlue.shade100
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 10, left: 10),
-                          child: Text(displayText),
-                        ),
-                      );
-                    },
+        return DragTarget<Map>(
+          onAccept: (data) {
+             final taskId = data['taskId'];
+             bloc.add(TaskDragEvent(taskId, widget.taskStatus));
+          },
+          builder: (context, candidateData, rejectData) {
+          return SizedBox(
+            width: 300,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.taskStatus.tr(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
-              ],
+                  const SizedBox(height: 10),
+                  if (items.isEmpty)
+                    Container()
+                  else
+                    ListView.builder(
+                      shrinkWrap: true,  // Added to avoid infinite height error
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                      
+                        String displayText;
+                        switch (widget.taskStatus) {
+                          case 'To-do':
+                            displayText = items[index]['taskName'];
+                            break;
+                          case 'On progress':
+                            displayText = items[index]['taskName'];
+                            break;
+                          case 'Done':
+                            displayText = items[index]['taskName'];
+                            break;
+                          default:
+                            displayText = '';
+                        }
+                        return Draggable<Map>(
+                          data: {
+                            'taskId': items[index]['taskID']
+                          },
+                          feedback: Material(child:Padding(
+                            padding: const EdgeInsets.only(bottom: 15.0),
+                            child: Container(
+                              height: 80,
+                              width: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(width: 1, color: Colors.grey),
+                                color: Colors.lightBlue.shade100
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, left: 10),
+                                child: Text(displayText),
+                              ),
+                            ),
+                          ), 
+                          ),
+                          childWhenDragging: Container(),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 15.0),
+                            child: Container(
+                              height: 80,
+                              width: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(width: 1, color: Colors.grey),
+                                color: Colors.lightBlue.shade100
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, left: 10),
+                                child: Text(displayText),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
-          ),
+          );
+        }
         );
       },
     );

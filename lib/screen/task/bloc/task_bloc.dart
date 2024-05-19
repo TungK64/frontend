@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/constants/constant.dart';
 import 'package:meta/meta.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,6 +14,7 @@ part 'task_state.dart';
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskBloc() : super(TaskState()) {
     _onTaskInitialEvent();
+    _onTaskDragEvent();
   }
 
   _onTaskInitialEvent() {
@@ -86,4 +89,24 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       }
     });
   }
+
+  _onTaskDragEvent() {
+    on<TaskDragEvent>((event, emit) async {
+      emit(state.clone(TaskStatus.loading));
+
+      String newStatus = event.newStatus;
+      newStatus = newStatus.toLowerCase();
+      newStatus = newStatus.replaceAll(" ", "-");
+
+      final changeStatusUrl = Uri.parse("${HOST}change-status/${event.taskId}/$newStatus");
+      final response = await http.put(changeStatusUrl);
+      if(response.statusCode == 200) {
+        emit(state.clone(TaskStatus.dragTask));
+      }
+      else {
+        emit(state.clone(TaskStatus.dragTask));
+      }
+    });
+  }
+
 }
