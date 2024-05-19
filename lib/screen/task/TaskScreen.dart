@@ -16,10 +16,15 @@ class TaskScreen extends StatefulWidget {
 
 class _TaskScreenState extends State<TaskScreen>{
   late TaskBloc bloc;
+  late ScrollController _scrollController;
+  late double _scrollPosition;
+  static const double _scrollThreshold = 40;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollPosition = 0.0;
   }
 
   @override
@@ -75,17 +80,21 @@ class _TaskScreenState extends State<TaskScreen>{
               ),
               const SizedBox(height: 30,),
               Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal, 
-                  child: SizedBox(
-                    width: 1000, 
-                    child: Row(children: [
-                      Expanded(child: TaskColumn("To-do")),
-                      const SizedBox(width: 10,),
-                      Expanded(child: TaskColumn("On progress")),
-                      const SizedBox(width: 10,),
-                      Expanded(child: TaskColumn("Done"))
-                    ],),
+                child: Listener(
+                  onPointerMove: _handlePointerMove,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, 
+                    controller: _scrollController,
+                    child: SizedBox(
+                      width: 1000, 
+                      child: Row(children: [
+                        Expanded(child: TaskColumn("To-do")),
+                        const SizedBox(width: 10,),
+                        Expanded(child: TaskColumn("On progress")),
+                        const SizedBox(width: 10,),
+                        Expanded(child: TaskColumn("Done"))
+                      ],),
+                    ),
                   ),
                 ),
               )
@@ -94,8 +103,27 @@ class _TaskScreenState extends State<TaskScreen>{
       }
       );
   }
-}
 
-// SingleChildScrollView(
-//             scrollDirection: Axis.horizontal,
-//             child: Container(),),
+  void _handlePointerMove(PointerEvent event) {
+    _scrollPosition = _scrollController.position.pixels;
+
+    if (event.position.dx >=
+            MediaQuery.of(context).size.width - _scrollThreshold &&
+        _scrollController.position.maxScrollExtent > _scrollPosition) {
+      // Scroll right
+      _scrollController.animateTo(
+        _scrollPosition + 50,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+      );
+    } else if (event.position.dx <= _scrollThreshold &&
+        _scrollPosition > _scrollController.position.minScrollExtent) {
+      // Scroll left
+      _scrollController.animateTo(
+        _scrollPosition - 50,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+}

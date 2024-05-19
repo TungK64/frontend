@@ -1,95 +1,3 @@
-// import 'package:easy_localization/easy_localization.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:frontend/screen/components/loading_icon.dart';
-// import 'package:frontend/screen/task/bloc/task_bloc.dart';
-// import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
-
-// class TaskColumn extends StatefulWidget {
-
-//   late String taskStatus;
-//   TaskColumn(this.taskStatus, {super.key});
-
-//   @override
-//   _TaskColumnState createState() => _TaskColumnState();
-// }
-
-// class _TaskColumnState extends State<TaskColumn> {
-//   late TaskBloc bloc;
-//   late String taskStatus;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     taskStatus = widget.taskStatus;
-//   }
-
-//   @override
-//   Widget build(Object context) {
-//     return BlocProvider(
-//       create: (context) => TaskBloc()..add(TaskInitialEvent()),
-//       child: Builder(
-//         builder: (context) => _buildViewChild(context),
-//       ),
-//     );
-//   }
-
-//   Widget _buildViewChild(BuildContext context) {
-//     bloc = BlocProvider.of<TaskBloc>(context);
-//     return BlocBuilder<TaskBloc, TaskState>(
-//       bloc: bloc,
-//       builder: (context, state) {
-        
-//         return SizedBox(
-//           width: 300,
-//           child: Padding(
-//             padding: const EdgeInsets.only(left: 15.0),
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(taskStatus.tr(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-//                 const SizedBox(height: 10,),
-//                 if(state.items.isEmpty)
-//                   Container()
-//                 else 
-//                   if(taskStatus == "To-do")
-//                     if(state.items[0].isEmpty)
-//                       Container()
-//                   else if(taskStatus == "On progress") 
-//                     if(state.items[1].isEmpty)
-//                       Container()
-//                   else if(taskStatus == "Done") 
-//                     if(state.items[2].isEmpty)
-//                       Container()
-//                   else 
-//                     ListView.builder(
-//                       itemCount: state.items.length,
-//                       itemBuilder: (context, index) {
-//                         return Container(
-//                           height: 80,
-//                           width: 300,
-//                           decoration: BoxDecoration(
-//                             borderRadius: BorderRadius.circular(15),
-//                             border: Border.all(width: 1, color: Colors.grey)
-//                           ),
-//                           child: Padding(
-//                             padding: EdgeInsets.only(top: 10, left: 10),
-//                             child: taskStatus == "To-do" ? Text(state.items[0][index]['userName']) : 
-//                               taskStatus == "On progress" ? Text(state.items[1][index]['taskName']) :
-//                               Text(state.items[2][index]['topicName']),
-//                           ),
-//                         );
-//                       }
-//                     ),
-//               ],
-//             ),
-//           ),
-//         );
-//       }
-//     );
-//   }
-// }
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -121,9 +29,11 @@ class _TaskColumnState extends State<TaskColumn> {
 
   Widget _buildViewChild(BuildContext context) {
     bloc = BlocProvider.of<TaskBloc>(context);
+    
     return BlocBuilder<TaskBloc, TaskState>(
       bloc: bloc,
       builder: (context, state) {
+        
         List<dynamic> items;
         switch (widget.taskStatus) {
           case 'To-do':
@@ -142,13 +52,14 @@ class _TaskColumnState extends State<TaskColumn> {
         return DragTarget<Map>(
           onAccept: (data) {
              final taskId = data['taskId'];
-             bloc.add(TaskDragEvent(taskId, widget.taskStatus));
+             final context = data['context'];
+             bloc.add(TaskDragEvent(taskId, context, widget.taskStatus));
           },
           builder: (context, candidateData, rejectData) {
           return SizedBox(
             width: 300,
             child: Padding(
-              padding: const EdgeInsets.only(left: 15.0),
+              padding: const EdgeInsets.only(left: 15.0, right: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,7 +93,8 @@ class _TaskColumnState extends State<TaskColumn> {
                         }
                         return Draggable<Map>(
                           data: {
-                            'taskId': items[index]['taskID']
+                            'taskId': items[index]['taskID'],
+                            'context': context,
                           },
                           feedback: Material(child:Padding(
                             padding: const EdgeInsets.only(bottom: 15.0),

@@ -8,5 +8,6 @@ class TaskInitialEvent extends TaskEvent {}
 class TaskDragEvent extends TaskEvent{
   final String taskId;
   final String newStatus;
-  TaskDragEvent(this.taskId, this.newStatus);
+  final BuildContext context;
+  TaskDragEvent(this.taskId, this.context, this.newStatus);
 }

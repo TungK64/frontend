@@ -105,6 +105,7 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
       } else {
         state.topic = null;
       }
+      emit(state.clone(TopicStatus.registerTopic));
     }));
   }
 }

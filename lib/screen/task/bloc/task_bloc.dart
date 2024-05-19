@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/constants/constant.dart';
+import 'package:frontend/screen/components/loading_icon.dart';
+import 'package:frontend/screen/task/TaskScreen.dart';
 import 'package:meta/meta.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -97,10 +100,18 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       String newStatus = event.newStatus;
       newStatus = newStatus.toLowerCase();
       newStatus = newStatus.replaceAll(" ", "-");
+      final context = event.context;
 
       final changeStatusUrl = Uri.parse("${HOST}change-status/${event.taskId}/$newStatus");
       final response = await http.put(changeStatusUrl);
       if(response.statusCode == 200) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) {
+            
+            return TaskScreen();}
+          )
+        );
+
         emit(state.clone(TaskStatus.dragTask));
       }
       else {
