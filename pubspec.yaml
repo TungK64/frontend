@@ -19,6 +19,7 @@ dependencies:
   url_launcher: ^6.2.4
   provider: ^6.1.2
   intl: ^0.18.1
+  lottie: ^2.7.0
 
 dev_dependencies:
   flutter_test:
@@ -33,3 +34,4 @@ flutter:
     - assets/flags/
     - assets/translations/
     - assets/images/topics/
+    - assets/animation/

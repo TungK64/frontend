@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/constants/constant.dart';
+import 'package:frontend/screen/home/home_screen.dart';
 import 'package:frontend/screen/login/login_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,13 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final localeString = prefs.getString('selectedLocale');
+  final userNumber = prefs.getString(USER_NUMBER);
+  bool isFirstOpen = true;
+  if (userNumber == "" || userNumber == null) {
+    isFirstOpen = true;
+  } else {
+    isFirstOpen = false;
+  }
   Locale? locale;
   if (localeString != null) {
     final parts = localeString.split('_');
@@ -32,20 +40,21 @@ Future<void> main() async {
           path: 'assets/translations',
           startLocale: locale,
           fallbackLocale: const Locale('en', 'US'),
-          child: const MainApp()
+          child: MainApp(isFirstOpen: isFirstOpen)
           // ),
           )));
 }
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  final bool isFirstOpen;
+  const MainApp({super.key, required this.isFirstOpen});
 
   @override
   State<MainApp> createState() => _MainAppState();
 }
 
 class _MainAppState extends State<MainApp> {
-
+  bool get isFirstOpen => widget.isFirstOpen;
   @override
   void initState() {
     super.initState();
@@ -54,10 +63,10 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            home: LoginScreen());
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        home: isFirstOpen ? LoginScreen() : HomeScreen());
   }
 }
 

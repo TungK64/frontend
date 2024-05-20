@@ -117,7 +117,8 @@ class _TopicScreenState extends State<TopicScreen> {
                                             TextField(
                                               controller: descriptionController,
                                               decoration: InputDecoration(
-                                                  labelText: "description".tr()),
+                                                  labelText:
+                                                      "description".tr()),
                                             ),
                                             const SizedBox(
                                               height: 30,
@@ -254,9 +255,11 @@ class _TopicScreenState extends State<TopicScreen> {
                                                                     context) {
                                                               return AlertDialog(
                                                                 title: Text(
-                                                                    "Success".tr()),
+                                                                    "Success"
+                                                                        .tr()),
                                                                 content: Text(
-                                                                    "Topic created successfully".tr()),
+                                                                    "Topic created successfully"
+                                                                        .tr()),
                                                                 actions: [
                                                                   ElevatedButton(
                                                                     onPressed:
@@ -340,9 +343,7 @@ class _TopicScreenState extends State<TopicScreen> {
                   if (state.status == TopicStatus.loading) {
                     return const Expanded(
                       child: Center(
-                        child: LoadingIcon(
-                          text: '',
-                        ),
+                        child: LoadingIcon(),
                       ),
                     );
                   }
@@ -363,7 +364,8 @@ class _TopicScreenState extends State<TopicScreen> {
                                         builder: (context) => AlertDialog(
                                           title: Text('register_topic'.tr()),
                                           content: Text(
-                                              'Confirm topic registration'.tr()),
+                                              'Confirm topic registration'
+                                                  .tr()),
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () =>
@@ -399,9 +401,11 @@ class _TopicScreenState extends State<TopicScreen> {
                                                     builder:
                                                         (BuildContext context) {
                                                       return AlertDialog(
-                                                        title: Text("Success".tr()),
+                                                        title: Text(
+                                                            "Success".tr()),
                                                         content: Text(
-                                                            "Register Topic successfully".tr()),
+                                                            "Register Topic successfully"
+                                                                .tr()),
                                                         actions: [
                                                           ElevatedButton(
                                                             onPressed: () {
@@ -557,9 +561,11 @@ class _TopicScreenState extends State<TopicScreen> {
                             top: 30, left: 15, right: 15, bottom: 20),
                         child: GestureDetector(
                           onTap: () async {
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
                             prefs.setString(TOPIC_ID, state.topic['topicId']);
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
                               return TaskScreen();
                             }));
                           },

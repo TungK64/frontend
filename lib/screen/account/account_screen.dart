@@ -32,9 +32,7 @@ class _AccountScreenState extends State<AccountScreen> {
       builder: (context, state) {
         if (state.status == AccountStatus.loading) {
           return const Center(
-            child: LoadingIcon(
-              text: '',
-            ),
+            child: LoadingIcon(),
           );
         }
         return Column(

@@ -1,9 +1,9 @@
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
 import 'package:frontend/screen/task/bloc/task_bloc.dart';
+import 'package:frontend/screen/task_create/TaskCreateScreen.dart';
 import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
 
 class TaskColumn extends StatefulWidget {
@@ -29,11 +29,10 @@ class _TaskColumnState extends State<TaskColumn> {
 
   Widget _buildViewChild(BuildContext context) {
     bloc = BlocProvider.of<TaskBloc>(context);
-    
+
     return BlocBuilder<TaskBloc, TaskState>(
       bloc: bloc,
       builder: (context, state) {
-        
         List<dynamic> items;
         switch (widget.taskStatus) {
           case 'To-do':
@@ -49,13 +48,11 @@ class _TaskColumnState extends State<TaskColumn> {
             items = [];
         }
 
-        return DragTarget<Map>(
-          onAccept: (data) {
-             final taskId = data['taskId'];
-             final context = data['context'];
-             bloc.add(TaskDragEvent(taskId, context, widget.taskStatus));
-          },
-          builder: (context, candidateData, rejectData) {
+        return DragTarget<Map>(onAccept: (data) {
+          final taskId = data['taskId'];
+          final context = data['context'];
+          bloc.add(TaskDragEvent(taskId, context, widget.taskStatus));
+        }, builder: (context, candidateData, rejectData) {
           return SizedBox(
             width: 300,
             child: Padding(
@@ -73,10 +70,9 @@ class _TaskColumnState extends State<TaskColumn> {
                     Container()
                   else
                     ListView.builder(
-                      shrinkWrap: true,  // Added to avoid infinite height error
+                      shrinkWrap: true, // Added to avoid infinite height error
                       itemCount: items.length,
                       itemBuilder: (context, index) {
-                      
                         String displayText;
                         switch (widget.taskStatus) {
                           case 'To-do':
@@ -96,37 +92,46 @@ class _TaskColumnState extends State<TaskColumn> {
                             'taskId': items[index]['taskID'],
                             'context': context,
                           },
-                          feedback: Material(child:Padding(
-                            padding: const EdgeInsets.only(bottom: 15.0),
-                            child: Container(
-                              height: 80,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(width: 1, color: Colors.grey),
-                                color: Colors.lightBlue.shade100
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10, left: 10),
-                                child: Text(displayText),
+                          feedback: Material(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 15.0),
+                              child: Container(
+                                height: 80,
+                                width: 300,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey),
+                                    color: Colors.lightBlue.shade100),
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 10, left: 10),
+                                  child: Text(displayText),
+                                ),
                               ),
                             ),
-                          ), 
                           ),
                           childWhenDragging: Container(),
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 15.0),
-                            child: Container(
-                              height: 80,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(width: 1, color: Colors.grey),
-                                color: Colors.lightBlue.shade100
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10, left: 10),
-                                child: Text(displayText),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return TaskCreateScreen();
+                                }));
+                              },
+                              child: Container(
+                                height: 80,
+                                width: 300,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey),
+                                    color: Colors.lightBlue.shade100),
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 10, left: 10),
+                                  child: Text(displayText),
+                                ),
                               ),
                             ),
                           ),
@@ -137,8 +142,7 @@ class _TaskColumnState extends State<TaskColumn> {
               ),
             ),
           );
-        }
-        );
+        });
       },
     );
   }

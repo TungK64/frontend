@@ -85,9 +85,12 @@ class _StudentListState extends State<StudentListOfTopic> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () async {
-                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                        prefs.setString(STUDENT_NUMBER, state.studentList[index]['userNumber']);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setString(STUDENT_NUMBER,
+                            state.studentList[index]['userNumber']);
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
                           return TaskScreen();
                         }));
                       },

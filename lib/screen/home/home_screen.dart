@@ -107,9 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, state) {
               if (state.status == HomeStatus.loading) {
                 return const Center(
-                  child: LoadingIcon(
-                    text: '',
-                  ),
+                  child: LoadingIcon(),
                 );
               }
               if (state.items.isEmpty || state.lecName.isEmpty) {
