@@ -18,6 +18,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskBloc() : super(TaskState()) {
     _onTaskInitialEvent();
     _onTaskDragEvent();
+    _onTaskInfoEvent();
   }
 
   _onTaskInitialEvent() {
@@ -128,5 +129,28 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         emit(state.clone(TaskStatus.dragTask));
       }
     });
+  }
+
+  _onTaskInfoEvent() {
+    on<TaskInfoEvent>((event, emit) async {
+      emit(state.clone(TaskStatus.loading));
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? role = prefs.getString(ROLE);
+      String? userNumber = prefs.getString(USER_NUMBER);
+      String? studentNumber = prefs.getString(STUDENT_NUMBER);
+      String assigneeNumber = event.taskInfo['assignee'];
+
+        final getAssigneeUrl = Uri.parse("${HOST}get-user/$assigneeNumber/Student");
+        final response = await http.get(getAssigneeUrl);
+        if(response.statusCode == 200) {
+          dynamic assignee = jsonDecode(utf8.decode(response.bodyBytes));
+          state.assignee = assignee;
+        } else {
+          state.assignee = {};
+        }
+      
+      emit(state.clone(TaskStatus.getTaskInfo));
+    });
+    
   }
 }

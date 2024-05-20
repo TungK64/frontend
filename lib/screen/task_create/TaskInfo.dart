@@ -4,18 +4,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
 import 'package:frontend/screen/task/bloc/task_bloc.dart';
 
-class TaskCreateScreen extends StatefulWidget {
+class TaskInfo extends StatefulWidget {
+  dynamic taskInfo;
+  
+  TaskInfo(this.taskInfo, {super.key});
+
   @override
-  State<StatefulWidget> createState() => _taskCreateScreenState();
+  State<StatefulWidget> createState() => _taskInfoState();
 }
 
-class _taskCreateScreenState extends State<TaskCreateScreen> {
+class _taskInfoState extends State<TaskInfo> {
   late TaskBloc bloc;
+  late dynamic taskInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    taskInfo = widget.taskInfo;
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TaskBloc(),
+      create: (context) => TaskBloc()..add(TaskInfoEvent(taskInfo)),
       child: Builder(
         builder: (context) => _buildViewChild(context),
       ),
@@ -103,7 +114,23 @@ class _taskCreateScreenState extends State<TaskCreateScreen> {
               ),
               Expanded(
                   child: SingleChildScrollView(
-                child: Column(),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 40,),
+                      Text(taskInfo['taskName'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+                      const SizedBox(height: 15,),
+                      Text("Assignee".tr(), style: TextStyle(color: Colors.grey, fontSize: 16),),
+                      const SizedBox(height: 5,),
+                      Builder(
+                        builder: (context) {
+                          return Text(state.assignee['userName'] ?? "Unknown");
+                        }
+                      )
+                    ],),
+                ),
               ))
             ]),
           );

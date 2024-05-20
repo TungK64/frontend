@@ -656,6 +656,9 @@ class _TopicScreenState extends State<TopicScreen> {
                                             "${HOST}get-student-in-topic/${state.topicList[index]['topicId']}");
                                         final studentListOfTopic =
                                             await http.get(urlGetStudentTopic);
+
+                                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                                        prefs.setString(TOPIC_ID, state.topicList[index]['topicId']);
                                         if (studentListOfTopic.statusCode ==
                                             200) {
                                           List<dynamic> studentList =

@@ -11,3 +11,8 @@ class TaskDragEvent extends TaskEvent{
   final BuildContext context;
   TaskDragEvent(this.taskId, this.context, this.newStatus);
 }
+
+class TaskInfoEvent extends TaskEvent{
+  final dynamic taskInfo;
+  TaskInfoEvent(this.taskInfo);
+}
