@@ -5,14 +5,17 @@ abstract class TaskEvent {}
 
 class TaskInitialEvent extends TaskEvent {}
 
-class TaskDragEvent extends TaskEvent{
+class TaskDragEvent extends TaskEvent {
   final String taskId;
   final String newStatus;
   final BuildContext context;
-  TaskDragEvent(this.taskId, this.context, this.newStatus);
+  final String oldStatus;
+  final int index;
+  TaskDragEvent(
+      this.taskId, this.context, this.index, this.oldStatus, this.newStatus);
 }
 
-class TaskInfoEvent extends TaskEvent{
+class TaskInfoEvent extends TaskEvent {
   final dynamic taskInfo;
   TaskInfoEvent(this.taskInfo);
 }

@@ -113,16 +113,44 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       String newStatus = event.newStatus;
       newStatus = newStatus.toLowerCase();
       newStatus = newStatus.replaceAll(" ", "-");
+      String oldStatus = event.oldStatus;
+      oldStatus = oldStatus.toLowerCase();
+      oldStatus = oldStatus.replaceAll(" ", "-");
       final context = event.context;
 
       final changeStatusUrl =
           Uri.parse("${HOST}change-status/${event.taskId}/$newStatus");
       final response = await http.put(changeStatusUrl);
       if (response.statusCode == 200) {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
-          return TaskScreen();
-        }));
+        if (oldStatus == "to-do" && newStatus != "to-do") {
+          if (newStatus == "on-progress") {
+            state.items[1].add(state.items[0][event.index]);
+            state.items[0].removeAt(event.index);
+          } else {
+            state.items[2].add(state.items[0][event.index]);
+            state.items[0].removeAt(event.index);
+          }
+        } else if (oldStatus == "on-progress" && newStatus != "on-progress") {
+          if (newStatus == "to-do") {
+            state.items[0].add(state.items[1][event.index]);
+            state.items[1].removeAt(event.index);
+          } else {
+            state.items[2].add(state.items[1][event.index]);
+            state.items[1].removeAt(event.index);
+          }
+        } else if (oldStatus == "done" && newStatus != "done") {
+          if (newStatus == "to-do") {
+            state.items[0].add(state.items[2][event.index]);
+            state.items[2].removeAt(event.index);
+          } else {
+            state.items[1].add(state.items[2][event.index]);
+            state.items[2].removeAt(event.index);
+          }
+        }
+        // Navigator.of(context)
+        //     .pushReplacement(MaterialPageRoute(builder: (context) {
+        //   return TaskScreen();
+        // }));
 
         emit(state.clone(TaskStatus.dragTask));
       } else {
@@ -138,19 +166,41 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       String? role = prefs.getString(ROLE);
       String? userNumber = prefs.getString(USER_NUMBER);
       String? studentNumber = prefs.getString(STUDENT_NUMBER);
+      String? topicId = prefs.getString(TOPIC_ID);
+      String? projectId = prefs.getString(PROJECT_ID);
       String assigneeNumber = event.taskInfo['assignee'];
 
-        final getAssigneeUrl = Uri.parse("${HOST}get-user/$assigneeNumber/Student");
-        final response = await http.get(getAssigneeUrl);
-        if(response.statusCode == 200) {
-          dynamic assignee = jsonDecode(utf8.decode(response.bodyBytes));
-          state.assignee = assignee;
-        } else {
-          state.assignee = {};
-        }
-      
+      final getAssigneeUrl =
+          Uri.parse("${HOST}get-user/$assigneeNumber/Student");
+      final response = await http.get(getAssigneeUrl);
+      if (response.statusCode == 200) {
+        dynamic assignee = jsonDecode(utf8.decode(response.bodyBytes));
+        state.assignee = assignee;
+      } else {
+        state.assignee = {};
+      }
+
+      final getTopicInfoUrl = Uri.parse("${HOST}get-topic-by-id/$topicId");
+      final getTopicResponse = await http.get(getTopicInfoUrl);
+      if (getTopicResponse.statusCode == 200) {
+        dynamic topicIfo = jsonDecode(utf8.decode(getTopicResponse.bodyBytes));
+        state.topicInfo = topicIfo;
+      } else {
+        state.topicInfo = {};
+      }
+
+      final getProjectInfoUrl =
+          Uri.parse("${HOST}get-project-by-id/$projectId");
+      final getProjectResponse = await http.get(getProjectInfoUrl);
+      if (getTopicResponse.statusCode == 200) {
+        dynamic projectInfo =
+            jsonDecode(utf8.decode(getProjectResponse.bodyBytes));
+        state.projectInfo = projectInfo;
+      } else {
+        state.projectInfo = {};
+      }
+
       emit(state.clone(TaskStatus.getTaskInfo));
     });
-    
   }
 }

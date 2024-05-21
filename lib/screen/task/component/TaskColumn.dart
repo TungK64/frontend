@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
 import 'package:frontend/screen/task/bloc/task_bloc.dart';
-import 'package:frontend/screen/task_create/TaskInfo.dart';
+import 'package:frontend/screen/task_info/TaskInfo.dart';
 import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
 
 class TaskColumn extends StatefulWidget {
@@ -51,7 +51,10 @@ class _TaskColumnState extends State<TaskColumn> {
         return DragTarget<Map>(onAccept: (data) {
           final taskId = data['taskId'];
           final context = data['context'];
-          bloc.add(TaskDragEvent(taskId, context, widget.taskStatus));
+          final oldStatus = data['oldStatus'];
+          final index = data['index'];
+          bloc.add(TaskDragEvent(
+              taskId, context, index, oldStatus, widget.taskStatus));
         }, builder: (context, candidateData, rejectData) {
           return SizedBox(
             width: 300,
@@ -91,6 +94,8 @@ class _TaskColumnState extends State<TaskColumn> {
                           data: {
                             'taskId': items[index]['taskID'],
                             'context': context,
+                            'index': index,
+                            'oldStatus': widget.taskStatus,
                           },
                           feedback: Material(
                             child: Padding(
