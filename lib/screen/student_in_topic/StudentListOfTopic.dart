@@ -87,8 +87,8 @@ class _StudentListState extends State<StudentListOfTopic> {
                       onTap: () async {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
-                        prefs.setString(STUDENT_NUMBER,
-                            state.studentList[index]['userNumber']);
+                        prefs.setString(
+                            STUDENT_NUMBER, studentList[index]['userNumber']);
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
                           return TaskScreen();
