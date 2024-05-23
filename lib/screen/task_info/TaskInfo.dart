@@ -1,14 +1,20 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
+import 'package:frontend/screen/task/TaskScreen.dart';
 import 'package:frontend/screen/task/bloc/task_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
 
 class TaskInfo extends StatefulWidget {
   dynamic taskInfo;
@@ -27,6 +33,7 @@ class _taskInfoState extends State<TaskInfo> {
   late String dropdownValue;
   late String priorityText;
   final TextEditingController commentController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   late List<String> fileType;
   late List<String> fileName;
 
@@ -49,9 +56,10 @@ class _taskInfoState extends State<TaskInfo> {
     super.initState();
     taskInfo = widget.taskInfo;
     dropdownValue = statusList.first;
-    priorityText = "-";
+    priorityText = taskInfo['priority'];
     fileType = [];
     fileName = [];
+    _selectedDate = DateTime.parse(taskInfo['deadline']);
   }
 
   @override
@@ -92,6 +100,9 @@ class _taskInfoState extends State<TaskInfo> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                          return TaskScreen();
+                        }));
                       },
                       child: const Icon(
                         Icons.arrow_back,
@@ -108,7 +119,60 @@ class _taskInfoState extends State<TaskInfo> {
                     ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        String? topicId = prefs.getString(TOPIC_ID);
+                        String? role = prefs.getString(ROLE);
+                        String? studentNumber = prefs.getString(STUDENT_NUMBER);
+                        String? userNumber = prefs.getString(USER_NUMBER);
+
+                        String description = "";
+                        if(descriptionController.text.isNotEmpty) {
+                          description = descriptionController.text;
+                          final addDescriptionUrl = Uri.parse("${HOST}add-description/${taskInfo['taskID']}");
+                          Map<String, String> bodyData = {'description': description};
+                          String jsonBody = jsonEncode(bodyData);
+                          await http.post(addDescriptionUrl,
+                            headers: {"Content-Type": "application/json"}, body: jsonBody);
+                        }
+
+                        if(_selectedDate != null) {
+                          if(role == "Student") {
+                            if(taskInfo['reporter'] != userNumber) {
+                              final changeDeadlineUrl = Uri.parse("${HOST}deadline/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
+                              Map<String, String> bodyData = {'deadline': _selectedDate.toString()};
+                              String jsonBody = jsonEncode(bodyData);
+                              await http.put(changeDeadlineUrl, body: jsonBody);
+                            }
+                          } else {
+                            final changeDeadlineUrl = Uri.parse("${HOST}deadline/${taskInfo['taskID']}/$userNumber/$studentNumber");
+                              Map<String, String> bodyData = {'deadline': _selectedDate.toString()};
+                              String jsonBody = jsonEncode(bodyData);
+                              await http.put(changeDeadlineUrl, body: jsonBody);
+                          }
+                        } 
+
+                        if(taskInfo['status'] != dropdownValue) {
+                          String newStatus = dropdownValue.toLowerCase();
+                          newStatus = newStatus.replaceAll(' ', "-");
+                          final changeStatusUrl = Uri.parse("${HOST}change-status/${taskInfo['taskID']}/$newStatus");
+                          await http.put(changeStatusUrl);
+                        }
+
+                        if(taskInfo['priority'] != priorityText) {
+                          final changePriority = Uri.parse("${HOST}set-prio/${taskInfo['taskID']}/$userNumber/$priorityText");
+                          await http.put(changePriority);
+                        }
+
+                        final getTaskByIdUrl = Uri.parse("${HOST}get-task-by-id/${taskInfo['taskID']}");
+                        final response = await http.get(getTaskByIdUrl);
+                        if(response.statusCode == 200) {
+                          dynamic editedTask = jsonDecode(utf8.decode(response.bodyBytes));
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                            return TaskInfo(editedTask);
+                          }));
+                        }
+                      },
                       child: const Icon(
                         Icons.done,
                         size: 24,
@@ -259,7 +323,7 @@ class _taskInfoState extends State<TaskInfo> {
                                         _selectedDate == null
                                             ? tr(
                                                 "Pick a date") // Change this line
-                                            : DateFormat('dd MMMM yyyy')
+                                            : DateFormat('dd MM yyyy')
                                                 .format(_selectedDate!),
                                         style: _selectedDate == null
                                             ? TextStyle(
@@ -300,7 +364,7 @@ class _taskInfoState extends State<TaskInfo> {
                                   inputDecorationTheme: InputDecorationTheme(
                                     border: InputBorder.none,
                                   ),
-                                  initialSelection: statusList.first,
+                                  initialSelection: taskInfo['status'] == "to-do" ? "To do" : taskInfo['status'] == "on-progress" ? "On progress" : "Done",
                                   onSelected: (String? value) {
                                     // This is called when the user selects an item.
                                     setState(() {
@@ -551,6 +615,7 @@ class _taskInfoState extends State<TaskInfo> {
                                     style: TextStyle(fontSize: 18),
                                   )
                                 : TextField(
+                                  controller: descriptionController,
                                     decoration: InputDecoration(
                                         hintText:
                                             "Add more detail for this task"
@@ -923,8 +988,31 @@ class _taskInfoState extends State<TaskInfo> {
                         color: Color.fromARGB(255, 240, 240, 240),
                         child: ListView.builder(
                             shrinkWrap: true,
-                            // itemCount: taskInfo['notifications'].length,
-                            itemBuilder: (context, index) {}),
+                            itemCount: taskInfo['notifications'].length,
+                            itemBuilder: (context, index) {
+                              if(taskInfo['notifications'][index]['type'] == "created") {
+                                return Padding(
+                                  padding: const EdgeInsets.only(left: 15.0, bottom: 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(taskInfo['notifications'][index]['message'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),), 
+                                      // const SizedBox(height: 5,), 
+                                      Text(taskInfo['notifications'][index]['time'], style: TextStyle(color: Color.fromARGB(255, 125, 126, 127)),)],),
+                                );
+                              } else if(taskInfo['notifications'][index]['type'] == "notice") {
+                                return Padding(
+                                  padding: const EdgeInsets.only(left: 15.0, bottom: 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(taskInfo['notifications'][index]['message'], style: TextStyle(fontSize: 16),), 
+                                      // const SizedBox(height: 5,), 
+                                      Text(taskInfo['notifications'][index]['time'], style: TextStyle(color: Color.fromARGB(255, 125, 126, 127)),)],),
+                                );
+                              }
+                            
+                            }),
                       )
                     ],
                   ),

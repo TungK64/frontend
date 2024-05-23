@@ -122,35 +122,35 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           Uri.parse("${HOST}change-status/${event.taskId}/$newStatus");
       final response = await http.put(changeStatusUrl);
       if (response.statusCode == 200) {
-        if (oldStatus == "to-do" && newStatus != "to-do") {
-          if (newStatus == "on-progress") {
-            state.items[1].add(state.items[0][event.index]);
-            state.items[0].removeAt(event.index);
-          } else {
-            state.items[2].add(state.items[0][event.index]);
-            state.items[0].removeAt(event.index);
-          }
-        } else if (oldStatus == "on-progress" && newStatus != "on-progress") {
-          if (newStatus == "to-do") {
-            state.items[0].add(state.items[1][event.index]);
-            state.items[1].removeAt(event.index);
-          } else {
-            state.items[2].add(state.items[1][event.index]);
-            state.items[1].removeAt(event.index);
-          }
-        } else if (oldStatus == "done" && newStatus != "done") {
-          if (newStatus == "to-do") {
-            state.items[0].add(state.items[2][event.index]);
-            state.items[2].removeAt(event.index);
-          } else {
-            state.items[1].add(state.items[2][event.index]);
-            state.items[2].removeAt(event.index);
-          }
-        }
-        // Navigator.of(context)
-        //     .pushReplacement(MaterialPageRoute(builder: (context) {
-        //   return TaskScreen();
-        // }));
+        // if (oldStatus == "to-do" && newStatus != "to-do") {
+        //   if (newStatus == "on-progress") {
+        //     state.items[1].add(state.items[0][event.index]);
+        //     state.items[0].removeAt(event.index);
+        //   } else {
+        //     state.items[2].add(state.items[0][event.index]);
+        //     state.items[0].removeAt(event.index);
+        //   }
+        // } else if (oldStatus == "on-progress" && newStatus != "on-progress") {
+        //   if (newStatus == "to-do") {
+        //     state.items[0].add(state.items[1][event.index]);
+        //     state.items[1].removeAt(event.index);
+        //   } else {
+        //     state.items[2].add(state.items[1][event.index]);
+        //     state.items[1].removeAt(event.index);
+        //   }
+        // } else if (oldStatus == "done" && newStatus != "done") {
+        //   if (newStatus == "to-do") {
+        //     state.items[0].add(state.items[2][event.index]);
+        //     state.items[2].removeAt(event.index);
+        //   } else {
+        //     state.items[1].add(state.items[2][event.index]);
+        //     state.items[2].removeAt(event.index);
+        //   }
+        // }
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) {
+          return TaskScreen();
+        }));
 
         emit(state.clone(TaskStatus.dragTask));
       } else {
