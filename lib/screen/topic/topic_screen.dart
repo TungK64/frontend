@@ -121,7 +121,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                       "description".tr()),
                                             ),
                                             const SizedBox(
-                                              height: 30,
+                                              height: 10,
                                             ),
                                             Text(
                                               alertText,
@@ -208,6 +208,10 @@ class _TopicScreenState extends State<TopicScreen> {
                                                       String topicDescription =
                                                           descriptionController
                                                               .text;
+
+                                                      descriptionController.clear;
+                                                          topicNameController.clear;
+                                                          
                                                       if (topicName.isEmpty) {
                                                         setState(() {
                                                           alertText =
@@ -219,7 +223,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                             jsonData = {
                                                           'topicName':
                                                               topicName,
-                                                          'description':
+                                                          'topicDescription':
                                                               topicDescription
                                                         };
                                                         String jsonBody =
@@ -246,8 +250,10 @@ class _TopicScreenState extends State<TopicScreen> {
                                                         if (response
                                                                 .statusCode ==
                                                             201) {
+                                                              
                                                           Navigator.of(context)
-                                                              .pop(); // Close current dialog
+                                                              .pop(); 
+                                                          // Close current dialog
                                                           showDialog(
                                                             context: context,
                                                             builder:
@@ -520,7 +526,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                   padding: const EdgeInsets.only(
                                       left: 15, right: 15, bottom: 30),
                                   child: Container(
-                                    height: 80,
+                                    height: 90,
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             style: BorderStyle.solid),

@@ -781,7 +781,10 @@ class _taskInfoState extends State<TaskInfo> {
                                                                   'docx',
                                                                   'mp4',
                                                                   'xlsx',
-                                                                  'pptx'
+                                                                  'pptx',
+                                                                  'png',
+                                                                  'jpg',
+                                                                  'jpeg'
                                                                 ],
                                                               );
 
