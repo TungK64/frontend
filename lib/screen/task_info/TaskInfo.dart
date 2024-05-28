@@ -1075,7 +1075,7 @@ class _taskInfoState extends State<TaskInfo> {
                                     ],
                                   ),
                                 );
-                              } else {
+                              } else if(notification['type'] == 'comment') {
                                 return Padding(padding: const EdgeInsets.only(left: 15, bottom: 15),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start, 
