@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
@@ -36,6 +39,7 @@ class _taskInfoState extends State<TaskInfo> {
   final TextEditingController descriptionController = TextEditingController();
   late List<String> fileType;
   late List<String> fileName;
+  late int amountTaskAttach;
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -59,7 +63,30 @@ class _taskInfoState extends State<TaskInfo> {
     priorityText = taskInfo['priority'];
     fileType = [];
     fileName = [];
+    if(taskInfo['attachments']  != null) {
+      amountTaskAttach = taskInfo['attachments'].length;
+    } else {
+      amountTaskAttach = 0;
+    }
+    
+
+    if(taskInfo['attachments'] != null) {
+      for(dynamic fName in taskInfo['attachments']) {
+        fileName.add(fName['fileName']);
+      }
+      for(String name in fileName) {
+        int extensionIndex = name.indexOf('.');
+        String extension = name.substring(extensionIndex + 1);
+        if(extension == 'png' || extension == 'jpg' || extension == 'jpeg') {
+          fileType.add('image');
+        } else {
+          fileType.add(extension);
+        }
+      }
+    }
+    if(taskInfo['deadline'] != null) {
     _selectedDate = DateTime.parse(taskInfo['deadline']);
+    }
   }
 
   @override
@@ -136,19 +163,20 @@ class _taskInfoState extends State<TaskInfo> {
                             headers: {"Content-Type": "application/json"}, body: jsonBody);
                         }
 
-                        if(_selectedDate != null) {
+                        if(_selectedDate != null && _selectedDate != DateTime.parse(taskInfo['deadline'])) {
                           if(role == "Student") {
                             if(taskInfo['reporter'] != userNumber) {
                               final changeDeadlineUrl = Uri.parse("${HOST}deadline/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
                               Map<String, String> bodyData = {'deadline': _selectedDate.toString()};
                               String jsonBody = jsonEncode(bodyData);
-                              await http.put(changeDeadlineUrl, body: jsonBody);
+                              await http.put(changeDeadlineUrl, body: jsonBody ,headers: {"Content-Type": "application/json"});
                             }
                           } else {
                             final changeDeadlineUrl = Uri.parse("${HOST}deadline/${taskInfo['taskID']}/$userNumber/$studentNumber");
                               Map<String, String> bodyData = {'deadline': _selectedDate.toString()};
                               String jsonBody = jsonEncode(bodyData);
-                              await http.put(changeDeadlineUrl, body: jsonBody);
+                              await http.put(changeDeadlineUrl,
+                            headers: {"Content-Type": "application/json"}, body: jsonBody);
                           }
                         } 
 
@@ -162,6 +190,20 @@ class _taskInfoState extends State<TaskInfo> {
                         if(taskInfo['priority'] != priorityText) {
                           final changePriority = Uri.parse("${HOST}set-prio/${taskInfo['taskID']}/$userNumber/$priorityText");
                           await http.put(changePriority);
+                        }
+
+                        if(taskInfo['attachments'] != null && taskInfo['attachments'].length != amountTaskAttach) {
+                          if(role == "Student") {
+                            final addAttachmentUrl =  Uri.parse("${HOST}attachments/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
+                            List<dynamic> bodyData = taskInfo['attachments'];
+                            String jsonBody = jsonEncode(bodyData);
+                            await http.post(addAttachmentUrl, headers: {"Content-Type": "application/json"}, body: jsonBody);
+                          } else {
+                            final addAttachmentUrl =  Uri.parse("${HOST}attachments/${taskInfo['taskID']}/$userNumber/$studentNumber");
+                            List<dynamic> bodyData = taskInfo['attachments'];
+                            String jsonBody = jsonEncode(bodyData);
+                            await http.post(addAttachmentUrl, headers: {"Content-Type": "application/json"}, body: jsonBody);
+                          }
                         }
 
                         final getTaskByIdUrl = Uri.parse("${HOST}get-task-by-id/${taskInfo['taskID']}");
@@ -728,7 +770,7 @@ class _taskInfoState extends State<TaskInfo> {
                                                                   taskInfo[
                                                                           'attachments']
                                                                       .add(
-                                                                          imgFileBytes);
+                                                                          {"fileName": "image", "taskId": taskInfo['taskID'], "fileContent": imgFileBytes});
                                                                 });
                                                               } else {
                                                                 Navigator.of(
@@ -817,7 +859,10 @@ class _taskInfoState extends State<TaskInfo> {
                                                                   taskInfo[
                                                                           'attachments']
                                                                       .add(
-                                                                          fileBytes);
+                                                                          {"fileName": result
+                                                                    .files
+                                                                    .single
+                                                                    .extension!, "taskId": taskInfo['taskID'], "fileContent": fileBytes});
                                                                 });
                                                               } else {
                                                                 Navigator.of(
@@ -872,7 +917,7 @@ class _taskInfoState extends State<TaskInfo> {
                                             File imageFile = File(filePath);
                                             imageFile.writeAsBytesSync(
                                                 taskInfo['attachments']
-                                                    [index - 1]);
+                                                    [index - 1]['fileContent']);
                                             OpenFile.open(filePath);
                                           },
                                           child: Padding(
@@ -880,11 +925,13 @@ class _taskInfoState extends State<TaskInfo> {
                                                 top: 10, left: 10, right: 10),
                                             child: fileType[index - 1] ==
                                                     "image"
-                                                ? Image.memory(
-                                                    taskInfo['attachments']
-                                                        [index - 1],
-                                                    fit: BoxFit.cover,
-                                                  )
+                                                ? taskInfo['attachments']
+                                                        [index - 1]['fileContent'].runtimeType == String ? Image.memory(
+                                                  base64Decode(taskInfo['attachments']
+                                                        [index - 1]['fileContent'])) : Image.memory(taskInfo['attachments']
+                                                        [index - 1]['fileContent']) 
+                                                    
+                                                  
                                                 : Container(
                                                     height: 60,
                                                     // width: 260,
@@ -987,36 +1034,72 @@ class _taskInfoState extends State<TaskInfo> {
                       const SizedBox(
                         height: 30,
                       ),
-                      Container(
-                        color: Color.fromARGB(255, 240, 240, 240),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: taskInfo['notifications'].length,
-                            itemBuilder: (context, index) {
-                              if(taskInfo['notifications'][index]['type'] == "created") {
+                      SingleChildScrollView(
+                        child: Container(
+                          color: Color.fromARGB(255, 240, 240, 240),
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: taskInfo['notifications'].map<Widget>((notification) {
+                              if (notification['type'] == 'created') {
                                 return Padding(
                                   padding: const EdgeInsets.only(left: 15.0, bottom: 10),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(taskInfo['notifications'][index]['message'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),), 
-                                      // const SizedBox(height: 5,), 
-                                      Text(taskInfo['notifications'][index]['time'], style: TextStyle(color: Color.fromARGB(255, 125, 126, 127)),)],),
+                                      Text(
+                                        notification['message'],
+                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        notification['time'],
+                                        style: TextStyle(color: Color.fromARGB(255, 125, 126, 127)),
+                                      ),
+                                    ],
+                                  ),
                                 );
-                              } else if(taskInfo['notifications'][index]['type'] == "notice") {
+                              } else if (notification['type'] == 'notice') {
                                 return Padding(
                                   padding: const EdgeInsets.only(left: 15.0, bottom: 10),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(taskInfo['notifications'][index]['message'], style: TextStyle(fontSize: 16),), 
-                                      // const SizedBox(height: 5,), 
-                                      Text(taskInfo['notifications'][index]['time'], style: TextStyle(color: Color.fromARGB(255, 125, 126, 127)),)],),
+                                      Text(
+                                        notification['message'],
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      Text(
+                                        notification['time'],
+                                        style: TextStyle(color: Color.fromARGB(255, 125, 126, 127)),
+                                      ),
+                                    ],
+                                  ),
                                 );
+                              } else {
+                                return Padding(padding: const EdgeInsets.only(left: 15, bottom: 15),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start, 
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(notification['message'].substring(0, notification['message'].indexOf("comment") - 1), style: TextStyle(fontSize: 18),),
+                                          const SizedBox(width: 5,),
+                                          Image.asset("assets/icons/comment.png", width: 30, height: 30,),
+                                          const SizedBox(width: 10,),
+                                          Text(notification['time'],
+                                          style: const TextStyle(color: Color.fromARGB(255, 125, 126, 127)),)
+                                        ],
+                                      ),
+                                      Text(notification['message'].substring(notification['message'].indexOf("comment") + 9, notification['message'].indexOf(taskInfo['taskName']) - 5))
+                                    ],
+                                  ),
+                                ); // Handle other types if necessary
                               }
-                            
-                            }),
-                      )
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      
                     ],
                   ),
                 ),
@@ -1043,9 +1126,31 @@ class _taskInfoState extends State<TaskInfo> {
                     Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           String comment = commentController.text;
-                          if (comment.isNotEmpty) {}
+                          if (comment.isNotEmpty) {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            String? role = prefs.getString(ROLE);
+                            String? userNumber = prefs.getString(USER_NUMBER);
+                            String? studentNumber = prefs.getString(STUDENT_NUMBER);
+                            if(role == "Student") {
+                              final addCommentUrl = Uri.parse("${HOST}comment/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
+                              String jsonComment = jsonEncode(comment);
+                              await http.post(addCommentUrl,headers: {"Content-Type": "application/json"}, body: jsonComment);
+                            } else {
+                              final addCommentUrl = Uri.parse("${HOST}comment/${taskInfo['taskID']}/$userNumber/$studentNumber");
+                              String jsonComment = jsonEncode(comment);
+                              await http.post(addCommentUrl,headers: {"Content-Type": "application/json"}, body: jsonComment);
+                            }
+                            final getTaskByIdUrl = Uri.parse("${HOST}get-task-by-id/${taskInfo['taskID']}");
+                            final response = await http.get(getTaskByIdUrl);
+                            if(response.statusCode == 200) {
+                              dynamic editedTask = jsonDecode(utf8.decode(response.bodyBytes));
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                                return TaskInfo(editedTask);
+                              }));
+                            }
+                          }
                         },
                         child: Container(
                           height: 40,
