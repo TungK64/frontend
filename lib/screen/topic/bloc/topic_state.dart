@@ -1,6 +1,6 @@
 part of 'topic_bloc.dart';
 
-enum TopicStatus { initial, loading, changeScreen, createTopic, registerTopic }
+enum TopicStatus { initial, loading, changeScreen, createTopic, registerTopic, deleteTopic, editTopic}
 
 class TopicState {
   List<dynamic> topicList = [];

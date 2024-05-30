@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -26,6 +27,8 @@ class _TopicScreenState extends State<TopicScreen> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController suggestTopicController = TextEditingController();
   final TextEditingController suggestDescriptionController = TextEditingController();
+  final TextEditingController editTopicController = TextEditingController();
+  final TextEditingController editDescriptionController = TextEditingController();
   String alertText = "";
 
   @override
@@ -483,7 +486,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                         height: 20,
                                                       ),
                                                       Text(
-                                                          "${"description".tr()} : ${state.topicList[index]['description'] ?? " "}"),
+                                                          "${"description".tr()} : ${state.topicList[index]['topicDescription'] ?? " "}"),
                                                       const SizedBox(
                                                         height: 20,
                                                       ),
@@ -930,7 +933,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                               height: 20,
                                                             ),
                                                             Text(
-                                                                "${"description".tr()} : ${state.topicList[index]['description'] ?? " "}"),
+                                                                "${"description".tr()} : ${state.topicList[index]['topicDescription'] ?? " "}"),
                                                             const SizedBox(
                                                               height: 20,
                                                             ),
@@ -969,13 +972,159 @@ class _TopicScreenState extends State<TopicScreen> {
                                                 Text(
                                                   state.topicList[index]
                                                       ['topicName'],
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 18),
                                                 ), 
                                                 const Spacer(),
-                                                Icon(Icons.edit_document, color: Colors.blue, size: 26,),
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    editTopicController.text = state.topicList[index]['topicName'];
+                                                    if(state.topicList[index]['topicDescription'] != null) {
+                                                      editDescriptionController.text = state.topicList[index]['topicDescription'];
+                                                    }
+                                                    showDialog(context: context, builder: (context) {
+                                                      return Dialog(
+                                                        shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15),),
+                                                        child: Container(
+                                                          height: 300,
+                                                          width: 250,
+                                                          child: Padding(padding: const EdgeInsets.only(left: 15, right: 15),
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment.start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    const SizedBox(height: 15,),
+                                                                    Center(
+                                                                      child: Text(
+                                                                        "Create Task".tr(),
+                                                                        style: const TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize: 20,
+                                                                            color: Colors.black),
+                                                                      ),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height: 20,
+                                                                    ),
+                                                                    Text("TopicName".tr(), style: TextStyle(color: Colors.black, fontSize: 18),),
+                                                                    TextField(controller: editTopicController ,decoration: InputDecoration(border: InputBorder.none, hintStyle: TextStyle(color: Colors.grey, fontSize: 20)),),
+                                                                    Text("Description".tr(), style: TextStyle(color: Colors.black, fontSize: 18),),
+                                                                    TextField(controller: editDescriptionController ,decoration: InputDecoration(hintText: "Add description for topic",border: InputBorder.none, hintStyle: TextStyle(color: Colors.grey, fontSize: 14),))  ,
+                                                                    const SizedBox(height: 20,),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                                      MainAxisAlignment.spaceAround,
+                                                                      children: [
+                                                                      ElevatedButton(
+                                                                        
+                                                                        style: ButtonStyle(
+                                                                          backgroundColor:
+                                                                              MaterialStateColor
+                                                                                  .resolveWith(
+                                                                            (states) {
+                                                                              return Colors.white;
+                                                                            },
+                                                                          ),
+                                                                          side:
+                                                                              MaterialStateBorderSide
+                                                                                  .resolveWith(
+                                                                            (states) {
+                                                                              return const BorderSide(
+                                                                                  color:
+                                                                                      Colors.red);
+                                                                            },
+                                                                          ),
+                                                                          shape: MaterialStateProperty
+                                                                              .all<
+                                                                                  RoundedRectangleBorder>(
+                                                                            RoundedRectangleBorder(
+                                                                              borderRadius:
+                                                                                  BorderRadius
+                                                                                      .circular(10),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        onPressed: () {
+                                                                          editTopicController.clear();
+                                                                          editDescriptionController.clear();
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                        },
+                                                                        child: Text(
+                                                                          "Cancel".tr(),
+                                                                          style: const TextStyle(
+                                                                              color: Colors.red),
+                                                                        )),
+                                                                        ElevatedButton(
+                                                                          style: ButtonStyle(
+                                                                            backgroundColor:
+                                                                                MaterialStateColor
+                                                                                    .resolveWith(
+                                                                              (states) {
+                                                                                return Colors.white;
+                                                                              },
+                                                                            ),
+                                                                            side:
+                                                                                MaterialStateBorderSide
+                                                                                    .resolveWith(
+                                                                              (states) {
+                                                                                return const BorderSide(
+                                                                                    color:
+                                                                                        Colors.blue);
+                                                                              },
+                                                                            ),
+                                                                            shape: MaterialStateProperty
+                                                                                .all<
+                                                                                    RoundedRectangleBorder>(
+                                                                              RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                    BorderRadius
+                                                                                        .circular(10),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          onPressed: () async {
+                                                                            String newTopicName;
+                                                                            String newDescription;
+                                                                            if(editTopicController.text == null) {
+                                                                              newTopicName = state.topicList[index]['topicName'];
+                                                                            } else {
+                                                                              newTopicName = editTopicController.text;
+                                                                            }
+                                                                            if(editDescriptionController.text == null) {
+                                                                              newDescription = "";
+                                                                            } else {
+                                                                              newDescription = editDescriptionController.text;
+                                                                            }
+                                                                            editTopicController.clear();
+                                                                            editDescriptionController.clear();
+                                                                            Navigator.of(context)
+                                                                              .pop();
+                                                                            bloc.add(EditTopicEvent(index, newTopicName, newDescription));
+                                                                          },
+                                                                          child: Text(
+                                                                            "Ok".tr(),
+                                                                            style: const TextStyle(
+                                                                                color: Colors.blue),
+                                                                          )),
+                                                                    ],)
+                                                                  ],
+                                                            ),
+                                                          )
+                                                        )
+                                                      );
+                                                    });
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.edit_document, 
+                                                    color: Colors.blue, 
+                                                    size: 26,
+                                                  )),
                                                 const SizedBox(width: 5,),
                                                 GestureDetector(
                                                   onTap: () {
@@ -1009,7 +1158,40 @@ class _TopicScreenState extends State<TopicScreen> {
                                                       );
                                                     }
                                                     else {
-                                                      
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) => AlertDialog(
+                                                          title: Text('delete_topic'.tr()),
+                                                          content: Text(
+                                                              'Confirm delete topic'
+                                                                  .tr()),
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                              onPressed: () =>
+                                                                  Navigator.of(context)
+                                                                      .pop(false),
+                                                              child: Text(
+                                                                'Cancel'.tr(),
+                                                                style: const TextStyle(
+                                                                    color: Colors.red),
+                                                              ),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () async {
+                                                                Navigator.of(context)
+                                                                      .pop(false);
+                                                                bloc.add(DeleteTopicEvent(index));
+                                                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                                                                  return TopicScreen();
+                                                                }));
+                                                              },
+                                                              child: Text('Yes'.tr(),
+                                                                  style: const TextStyle(
+                                                                      color: Colors.blue)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
                                                     }
                                                   },
                                                   child: Icon(Icons.delete, color: Colors.red, size: 26,)),

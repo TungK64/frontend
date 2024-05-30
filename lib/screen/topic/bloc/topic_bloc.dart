@@ -15,6 +15,8 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
     _onTopicInitialEvent();
     _onCreateTopicEvent();
     _onRegisterTopicEvent();
+    _onEditTopicEvent();
+    _onDeleteTopicEvent();
   }
 
   _onTopicInitialEvent() {
@@ -107,5 +109,41 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
       }
       emit(state.clone(TopicStatus.registerTopic));
     }));
+  }
+
+  _onEditTopicEvent() {
+    on<EditTopicEvent>((event, emit) async {
+      emit(state.clone(TopicStatus.loading));
+      String topicId = state.topicList[event.index]["topicId"];
+      final editTopicUrl = Uri.parse("${HOST}edit-topic/$topicId");
+
+      Map<String, String> data = {"topicName": event.newTopicName, "topicDescription": event.newDescription};
+      final jsonBody = jsonEncode(data);
+      final response = await http.put(editTopicUrl, headers: {"Content-Type":"application/json"}, body: jsonBody);
+      if(response.statusCode == 200) {
+        state.topicList[event.index]["topicName"] = event.newTopicName;
+        state.topicList[event.index]["description"] = event.newDescription;
+      }
+      emit( state.clone(TopicStatus.editTopic));
+    });
+  }
+
+  _onDeleteTopicEvent() {
+    on<DeleteTopicEvent>((event, emit) async {
+      emit(state.clone(TopicStatus.loading));
+      String topicId = state.topicList[event.index]["topicId"];
+
+      final deleteTopicUrl = Uri.parse("${HOST}delete/$topicId");
+      final response = await http.delete(deleteTopicUrl);
+      if(response.statusCode == 200) {
+        for(dynamic topic in state.topicList) {
+          if(topic['topicID'] == topicId) {
+            
+            state.topicList.remove(topic);
+          }
+        }
+      }
+      emit(state.clone(TopicStatus.deleteTopic));
+    });
   }
 }
