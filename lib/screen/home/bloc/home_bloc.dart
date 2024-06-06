@@ -22,6 +22,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeInitialEvent>((event, emit) async {
       emit(state.clone(HomeStatus.loading));
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userNumer = prefs.getString(USER_NUMBER);
 
       String uri = "${HOST}get-project/${prefs.getString(USER_NUMBER)}";
       final url = Uri.parse(uri);
@@ -61,6 +62,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         state.items = [];
       }
 
+      final getUnreadNotification = Uri.parse("${HOST}get-unread-noti/$userNumer");
+      final unreadNotiResponse = await http.get(getUnreadNotification);
+      if(unreadNotiResponse.statusCode == 200) {
+        state.unread = unreadNotiResponse.body;
+      }
       emit(state.clone(HomeStatus.initial));
     });
   }

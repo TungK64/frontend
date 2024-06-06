@@ -95,7 +95,7 @@ class _TaskScreenState extends State<TaskScreen> {
                           width: 10,
                         ),
                         Text(
-                          "task".tr(),
+                          "Task".tr(),
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 22),
                         ),
@@ -326,11 +326,17 @@ class _TaskScreenState extends State<TaskScreen> {
                                           String? topicId = prefs.getString(TOPIC_ID);
                                           String? userNumber = prefs.getString(USER_NUMBER);
                                           String? studentNumber = prefs.getString(STUDENT_NUMBER);
+                                          String? role = prefs.getString(ROLE);
                           
                                           String taskName = taskNameController.text;
                                           String description = descriptionController.text;
                                           if(taskName.isNotEmpty) {
-                                            final createTaskUrl = Uri.parse("${HOST}create-task/$topicId/$userNumber/$studentNumber");
+                                            var createTaskUrl;
+                                            if(role == "Lecture") {
+                                              createTaskUrl = Uri.parse("${HOST}create-task/$topicId/$userNumber/$studentNumber");
+                                            } else {
+                                              createTaskUrl = Uri.parse("${HOST}create-task/$topicId/$userNumber/$userNumber");
+                                            }
                                             Map<String, dynamic> data = {"taskName": taskName};
                                             if(description.isNotEmpty) {
                                               data.addAll({"description": description});

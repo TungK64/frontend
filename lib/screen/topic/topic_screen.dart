@@ -646,7 +646,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                           String? userNumber = prefs.getString(USER_NUMBER);
                                                           String? projectId = prefs.getString(PROJECT_ID);
 
-                                                          final suggestTopicUrl = Uri.parse("${HOST}/suggestư/$projectId/$userNumber");
+                                                          final suggestTopicUrl = Uri.parse("${HOST}suggest/$userNumber/$projectId");
                                                           if(suggestTopicController.text.isNotEmpty) {
                                                             Map<String, String> data = {};
                                                             if(suggestDescriptionController.text.isNotEmpty) {
@@ -656,7 +656,10 @@ class _TopicScreenState extends State<TopicScreen> {
                                                             }
                                                             final jsonBody = jsonEncode(data);
                                                             final response = await http.post(suggestTopicUrl, headers: {"Content-Type": "application/json"}, body: jsonBody);
-                                                            if(response.statusCode == 200) {
+                                                            if(response.statusCode == 201) {
+                                                              
+                                                              suggestTopicController.clear();
+                                                              suggestDescriptionController.clear();
                                                               showDialog(
                                                                 context: context,
                                                                 builder:
@@ -671,6 +674,9 @@ class _TopicScreenState extends State<TopicScreen> {
                                                                           ElevatedButton(
                                                                             onPressed: () {
                                                                               Navigator.of(
+                                                                                      context)
+                                                                                  .pop();
+                                                                                  Navigator.of(
                                                                                       context)
                                                                                   .pop();
                                                                             },
@@ -749,7 +755,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                           height: 10,
                                         ),
                                         Text(
-                                          "Suggested topic".tr(),
+                                          "Suggest topic".tr(),
                                           style: TextStyle(fontSize: 20),
                                         )
                                       ])),
@@ -1011,7 +1017,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                                     const SizedBox(
                                                                       height: 20,
                                                                     ),
-                                                                    Text("TopicName".tr(), style: TextStyle(color: Colors.black, fontSize: 18),),
+                                                                    Text("topic_name".tr(), style: TextStyle(color: Colors.black, fontSize: 18),),
                                                                     TextField(controller: editTopicController ,decoration: InputDecoration(border: InputBorder.none, hintStyle: TextStyle(color: Colors.grey, fontSize: 20)),),
                                                                     Text("Description".tr(), style: TextStyle(color: Colors.black, fontSize: 18),),
                                                                     TextField(controller: editDescriptionController ,decoration: InputDecoration(hintText: "Add description for topic",border: InputBorder.none, hintStyle: TextStyle(color: Colors.grey, fontSize: 14),))  ,
@@ -1257,11 +1263,19 @@ class _TopicScreenState extends State<TopicScreen> {
                                                     ),
                                                     Row(
                                                       children: [
-                                                        Text(
-                                                          "topic".tr() + " :",
-                                                          style: TextStyle(
-                                                              fontSize: 15),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              "topic".tr() + " : " ,
+                                                              style: TextStyle(
+                                                                  fontSize: 15),
+                                                            ),
+                                                            for(var i = 0; i < state.topicList.length; i++)
+                                                              if(state.studentList[index]['topicList'].contains(state.topicList[i]["topicId"]))
+                                                                Text(state.topicList[i]["topicName"]),
+                                                          ],
                                                         ),
+                                                        
                                                         const SizedBox(
                                                           width: 8,
                                                         ),

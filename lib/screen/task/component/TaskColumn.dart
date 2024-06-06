@@ -56,7 +56,8 @@ class _TaskColumnState extends State<TaskColumn> {
           bloc.add(TaskDragEvent(
               taskId, context, index, oldStatus, widget.taskStatus));
         }, builder: (context, candidateData, rejectData) {
-          return SizedBox(
+          return Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Colors.grey.shade100),
             width: 300,
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15),
@@ -126,7 +127,7 @@ class _TaskColumnState extends State<TaskColumn> {
                                 }));
                               },
                               child: Container(
-                                height: 80,
+                                height: 90,
                                 width: 300,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
@@ -135,7 +136,18 @@ class _TaskColumnState extends State<TaskColumn> {
                                     color: Colors.lightBlue.shade100),
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 10, left: 10),
-                                  child: Text(displayText),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(displayText, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                      const SizedBox(height: 5,),
+                                      
+                                      const SizedBox(height: 5,),
+                                      Text(items[index]['deadline'])
+                                    ],
+                                  ),
+
                                 ),
                               ),
                             ),

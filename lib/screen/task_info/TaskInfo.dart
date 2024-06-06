@@ -491,7 +491,7 @@ class _taskInfoState extends State<TaskInfo> {
                                                       child: Text(
                                                         "-",
                                                         style: TextStyle(
-                                                            fontSize: 22),
+                                                            fontSize: 25),
                                                       ),
                                                     ),
                                                   ),
@@ -509,12 +509,12 @@ class _taskInfoState extends State<TaskInfo> {
                                                     child: Center(
                                                       child: Container(
                                                         width: 100,
-                                                        height: 30,
+                                                        height: 40,
                                                         decoration: BoxDecoration(
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
-                                                                        15),
+                                                                        20),
                                                             color:
                                                                 Color.fromARGB(
                                                                     255,
@@ -523,7 +523,7 @@ class _taskInfoState extends State<TaskInfo> {
                                                                     106)),
                                                         child: Center(
                                                           child:
-                                                              Text("High".tr()),
+                                                              Text("High".tr(), style: TextStyle(fontSize: 20),),
                                                         ),
                                                       ),
                                                     ),
@@ -542,12 +542,12 @@ class _taskInfoState extends State<TaskInfo> {
                                                     child: Center(
                                                       child: Container(
                                                         width: 100,
-                                                        height: 30,
+                                                        height: 40,
                                                         decoration: BoxDecoration(
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
-                                                                        15),
+                                                                        20),
                                                             color:
                                                                 Color.fromARGB(
                                                                     255,
@@ -556,7 +556,7 @@ class _taskInfoState extends State<TaskInfo> {
                                                                     113)),
                                                         child: Center(
                                                           child: Text(
-                                                              "Medium".tr()),
+                                                              "Medium".tr(), style: TextStyle(fontSize: 20)),
                                                         ),
                                                       ),
                                                     ),
@@ -575,12 +575,12 @@ class _taskInfoState extends State<TaskInfo> {
                                                     child: Center(
                                                       child: Container(
                                                         width: 100,
-                                                        height: 30,
+                                                        height: 40,
                                                         decoration: BoxDecoration(
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
-                                                                        15),
+                                                                        20),
                                                             color:
                                                                 Color.fromARGB(
                                                                     255,
@@ -589,7 +589,7 @@ class _taskInfoState extends State<TaskInfo> {
                                                                     108)),
                                                         child: Center(
                                                           child:
-                                                              Text("Low".tr()),
+                                                              Text("Low".tr(), style: TextStyle(fontSize: 20)),
                                                         ),
                                                       ),
                                                     ),
@@ -1094,6 +1094,8 @@ class _taskInfoState extends State<TaskInfo> {
                                     ],
                                   ),
                                 ); // Handle other types if necessary
+                              } else {
+                                return Container();
                               }
                             }).toList(),
                           ),

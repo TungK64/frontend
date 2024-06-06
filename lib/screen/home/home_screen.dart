@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/constants/constant.dart';
 import 'package:frontend/screen/account/account_screen.dart';
 import 'package:frontend/screen/components/loading_icon.dart';
 import 'package:frontend/screen/home/bloc/home_bloc.dart';
+import 'package:frontend/screen/notifications/notification_screen.dart';
 import 'package:frontend/screen/setting/setting_screen.dart';
 import 'package:frontend/screen/topic/topic_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,9 +74,30 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                 Row(
                   children: [
-                    const Icon(
-                      Icons.notifications,
-                      color: Colors.white,
+                    GestureDetector(
+                      onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return NotificationScreen();
+                          }));
+                      },
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          const Icon(
+                          Icons.notifications,
+                          color: Colors.white,
+                        ),
+                        Positioned(
+                          right: -4,
+                          top: -8,
+                          child: BlocBuilder<HomeBloc, HomeState>(
+                            bloc: bloc,
+                            builder: (context, state) {
+                              return Text(state.unread, style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),);
+                            },
+                        ))
+                        ]
+                      ),
                     ),
                     const SizedBox(
                       width: 10,
