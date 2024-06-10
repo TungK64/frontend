@@ -18,7 +18,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-
 class TaskInfo extends StatefulWidget {
   dynamic taskInfo;
 
@@ -32,7 +31,12 @@ class _taskInfoState extends State<TaskInfo> {
   late TaskBloc bloc;
   late dynamic taskInfo;
   DateTime? _selectedDate;
-  final List<String> statusList = <String>['To do', 'On progress', 'Done'];
+  final List<String> statusList = <String>[
+    'To do',
+    'On progress',
+    'Done',
+    'Cancel'
+  ];
   late String dropdownValue;
   late String priorityText;
   final TextEditingController commentController = TextEditingController();
@@ -63,29 +67,28 @@ class _taskInfoState extends State<TaskInfo> {
     priorityText = taskInfo['priority'];
     fileType = [];
     fileName = [];
-    if(taskInfo['attachments']  != null) {
+    if (taskInfo['attachments'] != null) {
       amountTaskAttach = taskInfo['attachments'].length;
     } else {
       amountTaskAttach = 0;
     }
-    
 
-    if(taskInfo['attachments'] != null) {
-      for(dynamic fName in taskInfo['attachments']) {
+    if (taskInfo['attachments'] != null) {
+      for (dynamic fName in taskInfo['attachments']) {
         fileName.add(fName['fileName']);
       }
-      for(String name in fileName) {
+      for (String name in fileName) {
         int extensionIndex = name.indexOf('.');
         String extension = name.substring(extensionIndex + 1);
-        if(extension == 'png' || extension == 'jpg' || extension == 'jpeg') {
+        if (extension == 'png' || extension == 'jpg' || extension == 'jpeg') {
           fileType.add('image');
         } else {
           fileType.add(extension);
         }
       }
     }
-    if(taskInfo['deadline'] != null) {
-    _selectedDate = DateTime.parse(taskInfo['deadline']);
+    if (taskInfo['deadline'] != null) {
+      _selectedDate = DateTime.parse(taskInfo['deadline']);
     }
   }
 
@@ -127,7 +130,8 @@ class _taskInfoState extends State<TaskInfo> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
                           return TaskScreen();
                         }));
                       },
@@ -147,70 +151,101 @@ class _taskInfoState extends State<TaskInfo> {
                     const Spacer(),
                     GestureDetector(
                       onTap: () async {
-                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
                         String? topicId = prefs.getString(TOPIC_ID);
                         String? role = prefs.getString(ROLE);
                         String? studentNumber = prefs.getString(STUDENT_NUMBER);
                         String? userNumber = prefs.getString(USER_NUMBER);
 
                         String description = "";
-                        if(descriptionController.text.isNotEmpty) {
+                        if (descriptionController.text.isNotEmpty) {
                           description = descriptionController.text;
-                          final addDescriptionUrl = Uri.parse("${HOST}add-description/${taskInfo['taskID']}");
-                          Map<String, String> bodyData = {'description': description};
+                          final addDescriptionUrl = Uri.parse(
+                              "${HOST}add-description/${taskInfo['taskID']}");
+                          Map<String, String> bodyData = {
+                            'description': description
+                          };
                           String jsonBody = jsonEncode(bodyData);
                           await http.post(addDescriptionUrl,
-                            headers: {"Content-Type": "application/json"}, body: jsonBody);
+                              headers: {"Content-Type": "application/json"},
+                              body: jsonBody);
                         }
 
-                        if(_selectedDate != null && _selectedDate != DateTime.parse(taskInfo['deadline'])) {
-                          if(role == "Student") {
-                            if(taskInfo['reporter'] != userNumber) {
-                              final changeDeadlineUrl = Uri.parse("${HOST}deadline/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
-                              Map<String, String> bodyData = {'deadline': _selectedDate.toString()};
-                              String jsonBody = jsonEncode(bodyData);
-                              await http.put(changeDeadlineUrl, body: jsonBody ,headers: {"Content-Type": "application/json"});
-                            }
-                          } else {
-                            final changeDeadlineUrl = Uri.parse("${HOST}deadline/${taskInfo['taskID']}/$userNumber/$studentNumber");
-                              Map<String, String> bodyData = {'deadline': _selectedDate.toString()};
+                        if (_selectedDate != null &&
+                            _selectedDate !=
+                                DateTime.parse(taskInfo['deadline'])) {
+                          if (role == "Student") {
+                            if (taskInfo['reporter'] != userNumber) {
+                              final changeDeadlineUrl = Uri.parse(
+                                  "${HOST}deadline/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
+                              Map<String, String> bodyData = {
+                                'deadline': _selectedDate.toString()
+                              };
                               String jsonBody = jsonEncode(bodyData);
                               await http.put(changeDeadlineUrl,
-                            headers: {"Content-Type": "application/json"}, body: jsonBody);
+                                  body: jsonBody,
+                                  headers: {
+                                    "Content-Type": "application/json"
+                                  });
+                            }
+                          } else {
+                            final changeDeadlineUrl = Uri.parse(
+                                "${HOST}deadline/${taskInfo['taskID']}/$userNumber/$studentNumber");
+                            Map<String, String> bodyData = {
+                              'deadline': _selectedDate.toString()
+                            };
+                            String jsonBody = jsonEncode(bodyData);
+                            await http.put(changeDeadlineUrl,
+                                headers: {"Content-Type": "application/json"},
+                                body: jsonBody);
                           }
-                        } 
+                        }
 
-                        if(taskInfo['status'] != dropdownValue) {
+                        if (taskInfo['status'] != dropdownValue) {
                           String newStatus = dropdownValue.toLowerCase();
                           newStatus = newStatus.replaceAll(' ', "-");
-                          final changeStatusUrl = Uri.parse("${HOST}change-status/${taskInfo['taskID']}/$newStatus");
+                          final changeStatusUrl = Uri.parse(
+                              "${HOST}change-status/${taskInfo['taskID']}/$newStatus");
                           await http.put(changeStatusUrl);
                         }
 
-                        if(taskInfo['priority'] != priorityText) {
-                          final changePriority = Uri.parse("${HOST}set-prio/${taskInfo['taskID']}/$userNumber/$priorityText");
+                        if (taskInfo['priority'] != priorityText) {
+                          final changePriority = Uri.parse(
+                              "${HOST}set-prio/${taskInfo['taskID']}/$userNumber/$priorityText");
                           await http.put(changePriority);
                         }
 
-                        if(taskInfo['attachments'] != null && taskInfo['attachments'].length != amountTaskAttach) {
-                          if(role == "Student") {
-                            final addAttachmentUrl =  Uri.parse("${HOST}attachments/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
+                        if (taskInfo['attachments'] != null &&
+                            taskInfo['attachments'].length !=
+                                amountTaskAttach) {
+                          if (role == "Student") {
+                            final addAttachmentUrl = Uri.parse(
+                                "${HOST}attachments/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
                             List<dynamic> bodyData = taskInfo['attachments'];
                             String jsonBody = jsonEncode(bodyData);
-                            await http.post(addAttachmentUrl, headers: {"Content-Type": "application/json"}, body: jsonBody);
+                            await http.post(addAttachmentUrl,
+                                headers: {"Content-Type": "application/json"},
+                                body: jsonBody);
                           } else {
-                            final addAttachmentUrl =  Uri.parse("${HOST}attachments/${taskInfo['taskID']}/$userNumber/$studentNumber");
+                            final addAttachmentUrl = Uri.parse(
+                                "${HOST}attachments/${taskInfo['taskID']}/$userNumber/$studentNumber");
                             List<dynamic> bodyData = taskInfo['attachments'];
                             String jsonBody = jsonEncode(bodyData);
-                            await http.post(addAttachmentUrl, headers: {"Content-Type": "application/json"}, body: jsonBody);
+                            await http.post(addAttachmentUrl,
+                                headers: {"Content-Type": "application/json"},
+                                body: jsonBody);
                           }
                         }
 
-                        final getTaskByIdUrl = Uri.parse("${HOST}get-task-by-id/${taskInfo['taskID']}");
+                        final getTaskByIdUrl = Uri.parse(
+                            "${HOST}get-task-by-id/${taskInfo['taskID']}");
                         final response = await http.get(getTaskByIdUrl);
-                        if(response.statusCode == 200) {
-                          dynamic editedTask = jsonDecode(utf8.decode(response.bodyBytes));
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                        if (response.statusCode == 200) {
+                          dynamic editedTask =
+                              jsonDecode(utf8.decode(response.bodyBytes));
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) {
                             return TaskInfo(editedTask);
                           }));
                         }
@@ -406,7 +441,12 @@ class _taskInfoState extends State<TaskInfo> {
                                   inputDecorationTheme: InputDecorationTheme(
                                     border: InputBorder.none,
                                   ),
-                                  initialSelection: taskInfo['status'] == "to-do" ? "To do" : taskInfo['status'] == "on-progress" ? "On progress" : "Done",
+                                  initialSelection:
+                                      taskInfo['status'] == "to-do"
+                                          ? "To do"
+                                          : taskInfo['status'] == "on-progress"
+                                              ? "On progress"
+                                              : "Done",
                                   onSelected: (String? value) {
                                     // This is called when the user selects an item.
                                     setState(() {
@@ -522,8 +562,11 @@ class _taskInfoState extends State<TaskInfo> {
                                                                     106,
                                                                     106)),
                                                         child: Center(
-                                                          child:
-                                                              Text("High".tr(), style: TextStyle(fontSize: 20),),
+                                                          child: Text(
+                                                            "High".tr(),
+                                                            style: TextStyle(
+                                                                fontSize: 20),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -556,7 +599,10 @@ class _taskInfoState extends State<TaskInfo> {
                                                                     113)),
                                                         child: Center(
                                                           child: Text(
-                                                              "Medium".tr(), style: TextStyle(fontSize: 20)),
+                                                              "Medium".tr(),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      20)),
                                                         ),
                                                       ),
                                                     ),
@@ -588,8 +634,11 @@ class _taskInfoState extends State<TaskInfo> {
                                                                     189,
                                                                     108)),
                                                         child: Center(
-                                                          child:
-                                                              Text("Low".tr(), style: TextStyle(fontSize: 20)),
+                                                          child: Text(
+                                                              "Low".tr(),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      20)),
                                                         ),
                                                       ),
                                                     ),
@@ -657,7 +706,7 @@ class _taskInfoState extends State<TaskInfo> {
                                     style: TextStyle(fontSize: 18),
                                   )
                                 : TextField(
-                                  controller: descriptionController,
+                                    controller: descriptionController,
                                     decoration: InputDecoration(
                                         hintText:
                                             "Add more detail for this task"
@@ -769,8 +818,15 @@ class _taskInfoState extends State<TaskInfo> {
                                                                   }
                                                                   taskInfo[
                                                                           'attachments']
-                                                                      .add(
-                                                                          {"fileName": "image", "taskId": taskInfo['taskID'], "fileContent": imgFileBytes});
+                                                                      .add({
+                                                                    "fileName":
+                                                                        "image",
+                                                                    "taskId":
+                                                                        taskInfo[
+                                                                            'taskID'],
+                                                                    "fileContent":
+                                                                        imgFileBytes
+                                                                  });
                                                                 });
                                                               } else {
                                                                 Navigator.of(
@@ -858,11 +914,17 @@ class _taskInfoState extends State<TaskInfo> {
                                                                   }
                                                                   taskInfo[
                                                                           'attachments']
-                                                                      .add(
-                                                                          {"fileName": result
-                                                                    .files
-                                                                    .single
-                                                                    .extension!, "taskId": taskInfo['taskID'], "fileContent": fileBytes});
+                                                                      .add({
+                                                                    "fileName": result
+                                                                        .files
+                                                                        .single
+                                                                        .extension!,
+                                                                    "taskId":
+                                                                        taskInfo[
+                                                                            'taskID'],
+                                                                    "fileContent":
+                                                                        fileBytes
+                                                                  });
                                                                 });
                                                               } else {
                                                                 Navigator.of(
@@ -926,12 +988,18 @@ class _taskInfoState extends State<TaskInfo> {
                                             child: fileType[index - 1] ==
                                                     "image"
                                                 ? taskInfo['attachments']
-                                                        [index - 1]['fileContent'].runtimeType == String ? Image.memory(
-                                                  base64Decode(taskInfo['attachments']
-                                                        [index - 1]['fileContent'])) : Image.memory(taskInfo['attachments']
-                                                        [index - 1]['fileContent']) 
-                                                    
-                                                  
+                                                                    [index - 1]
+                                                                ['fileContent']
+                                                            .runtimeType ==
+                                                        String
+                                                    ? Image.memory(base64Decode(
+                                                        taskInfo['attachments']
+                                                                [index - 1]
+                                                            ['fileContent']))
+                                                    : Image.memory(
+                                                        taskInfo['attachments']
+                                                                [index - 1]
+                                                            ['fileContent'])
                                                 : Container(
                                                     height: 60,
                                                     // width: 260,
@@ -1040,29 +1108,38 @@ class _taskInfoState extends State<TaskInfo> {
                           padding: EdgeInsets.symmetric(vertical: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: taskInfo['notifications'].map<Widget>((notification) {
+                            children: taskInfo['notifications']
+                                .map<Widget>((notification) {
                               if (notification['type'] == 'created') {
                                 return Padding(
-                                  padding: const EdgeInsets.only(left: 15.0, bottom: 10),
+                                  padding: const EdgeInsets.only(
+                                      left: 15.0, bottom: 10),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         notification['message'],
-                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         notification['time'],
-                                        style: TextStyle(color: Color.fromARGB(255, 125, 126, 127)),
+                                        style: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 125, 126, 127)),
                                       ),
                                     ],
                                   ),
                                 );
                               } else if (notification['type'] == 'notice') {
                                 return Padding(
-                                  padding: const EdgeInsets.only(left: 15.0, bottom: 10),
+                                  padding: const EdgeInsets.only(
+                                      left: 15.0, bottom: 10),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         notification['message'],
@@ -1070,27 +1147,57 @@ class _taskInfoState extends State<TaskInfo> {
                                       ),
                                       Text(
                                         notification['time'],
-                                        style: TextStyle(color: Color.fromARGB(255, 125, 126, 127)),
+                                        style: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 125, 126, 127)),
                                       ),
                                     ],
                                   ),
                                 );
-                              } else if(notification['type'] == 'comment') {
-                                return Padding(padding: const EdgeInsets.only(left: 15, bottom: 15),
+                              } else if (notification['type'] == 'comment') {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 15, bottom: 15),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start, 
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
-                                          Text(notification['message'].substring(0, notification['message'].indexOf("comment") - 1), style: TextStyle(fontSize: 18),),
-                                          const SizedBox(width: 5,),
-                                          Image.asset("assets/icons/comment.png", width: 30, height: 30,),
-                                          const SizedBox(width: 10,),
-                                          Text(notification['time'],
-                                          style: const TextStyle(color: Color.fromARGB(255, 125, 126, 127)),)
+                                          Text(
+                                            notification['message'].substring(
+                                                0,
+                                                notification['message']
+                                                        .indexOf("comment") -
+                                                    1),
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Image.asset(
+                                            "assets/icons/comment.png",
+                                            width: 30,
+                                            height: 30,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            notification['time'],
+                                            style: const TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 125, 126, 127)),
+                                          )
                                         ],
                                       ),
-                                      Text(notification['message'].substring(notification['message'].indexOf("comment") + 9, notification['message'].indexOf(taskInfo['taskName']) - 5))
+                                      Text(notification['message'].substring(
+                                          notification['message']
+                                                  .indexOf("comment") +
+                                              9,
+                                          notification['message'].indexOf(
+                                                  taskInfo['taskName']) -
+                                              5))
                                     ],
                                   ),
                                 ); // Handle other types if necessary
@@ -1101,7 +1208,6 @@ class _taskInfoState extends State<TaskInfo> {
                           ),
                         ),
                       ),
-                      
                     ],
                   ),
                 ),
@@ -1131,24 +1237,35 @@ class _taskInfoState extends State<TaskInfo> {
                         onTap: () async {
                           String comment = commentController.text;
                           if (comment.isNotEmpty) {
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
                             String? role = prefs.getString(ROLE);
                             String? userNumber = prefs.getString(USER_NUMBER);
-                            String? studentNumber = prefs.getString(STUDENT_NUMBER);
-                            if(role == "Student") {
-                              final addCommentUrl = Uri.parse("${HOST}comment/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
+                            String? studentNumber =
+                                prefs.getString(STUDENT_NUMBER);
+                            if (role == "Student") {
+                              final addCommentUrl = Uri.parse(
+                                  "${HOST}comment/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
                               String jsonComment = jsonEncode(comment);
-                              await http.post(addCommentUrl,headers: {"Content-Type": "application/json"}, body: jsonComment);
+                              await http.post(addCommentUrl,
+                                  headers: {"Content-Type": "application/json"},
+                                  body: jsonComment);
                             } else {
-                              final addCommentUrl = Uri.parse("${HOST}comment/${taskInfo['taskID']}/$userNumber/$studentNumber");
+                              final addCommentUrl = Uri.parse(
+                                  "${HOST}comment/${taskInfo['taskID']}/$userNumber/$studentNumber");
                               String jsonComment = jsonEncode(comment);
-                              await http.post(addCommentUrl,headers: {"Content-Type": "application/json"}, body: jsonComment);
+                              await http.post(addCommentUrl,
+                                  headers: {"Content-Type": "application/json"},
+                                  body: jsonComment);
                             }
-                            final getTaskByIdUrl = Uri.parse("${HOST}get-task-by-id/${taskInfo['taskID']}");
+                            final getTaskByIdUrl = Uri.parse(
+                                "${HOST}get-task-by-id/${taskInfo['taskID']}");
                             final response = await http.get(getTaskByIdUrl);
-                            if(response.statusCode == 200) {
-                              dynamic editedTask = jsonDecode(utf8.decode(response.bodyBytes));
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                            if (response.statusCode == 200) {
+                              dynamic editedTask =
+                                  jsonDecode(utf8.decode(response.bodyBytes));
+                              Navigator.pushReplacement(context,
+                                  MaterialPageRoute(builder: (context) {
                                 return TaskInfo(editedTask);
                               }));
                             }

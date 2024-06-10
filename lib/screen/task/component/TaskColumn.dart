@@ -57,7 +57,9 @@ class _TaskColumnState extends State<TaskColumn> {
               taskId, context, index, oldStatus, widget.taskStatus));
         }, builder: (context, candidateData, rejectData) {
           return Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Colors.grey.shade100),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.grey.shade100),
             width: 300,
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15),
@@ -67,7 +69,8 @@ class _TaskColumnState extends State<TaskColumn> {
                 children: [
                   Text(
                     widget.taskStatus.tr(),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   const SizedBox(height: 10),
                   if (items.isEmpty)
@@ -86,6 +89,9 @@ class _TaskColumnState extends State<TaskColumn> {
                             displayText = items[index]['taskName'];
                             break;
                           case 'Done':
+                            displayText = items[index]['taskName'];
+                            break;
+                          case 'Cancel':
                             displayText = items[index]['taskName'];
                             break;
                           default:
@@ -138,16 +144,24 @@ class _TaskColumnState extends State<TaskColumn> {
                                   padding: EdgeInsets.only(top: 10, left: 10),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(displayText, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                      const SizedBox(height: 5,),
-                                      
-                                      const SizedBox(height: 5,),
+                                      Text(
+                                        displayText,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       Text(items[index]['deadline'])
                                     ],
                                   ),
-
                                 ),
                               ),
                             ),
