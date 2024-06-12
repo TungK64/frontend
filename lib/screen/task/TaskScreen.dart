@@ -139,8 +139,12 @@ class _TaskScreenState extends State<TaskScreen> {
               children: [
                 Container(
                   width: 120,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.lightBlue),
                   child: FloatingActionButton(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.lightBlue,
+                    elevation: 0,
                     heroTag: 'Create task',
                     onPressed: () {
                       showDialog(
@@ -435,6 +439,13 @@ class _TaskScreenState extends State<TaskScreen> {
                                                                   Navigator.of(
                                                                           context)
                                                                       .pop();
+                                                                  Navigator.pushReplacement(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder:
+                                                                              (context) {
+                                                                    return TaskScreen();
+                                                                  }));
                                                                 },
                                                                 child:
                                                                     Text("OK"),

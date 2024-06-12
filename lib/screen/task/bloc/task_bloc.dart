@@ -37,10 +37,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             Uri.parse("${HOST}get-task/$topicId/on-progress/$userNumber");
         final getTaskDone =
             Uri.parse("${HOST}get-task/$topicId/done/$userNumber");
+        final getTaskCancel =
+            Uri.parse("${HOST}get-task/$topicId/cancel/$userNumber");
 
         final todoTaskList = await http.get(getTaskTodo);
         final onProgressTaskList = await http.get(getTaskOnProgress);
         final doneTaskList = await http.get(getTaskDone);
+        final cancelTaskList = await http.get(getTaskCancel);
 
         if (todoTaskList.statusCode == 200) {
           List<dynamic> jsonTodoTaskList =
@@ -65,6 +68,15 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         } else {
           state.items.add([]);
         }
+
+        if (cancelTaskList.statusCode == 200) {
+          List<dynamic> jsonCancelTaskList =
+              jsonDecode(utf8.decode(cancelTaskList.bodyBytes));
+          state.items.add(jsonCancelTaskList);
+        } else {
+          state.items.add([]);
+        }
+
         emit(state.clone(TaskStatus.initial));
       } else {
         final getTaskTodo =
@@ -73,10 +85,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             Uri.parse("${HOST}get-task/$topicId/on-progress/$studentNumber");
         final getTaskDone =
             Uri.parse("${HOST}get-task/$topicId/done/$studentNumber");
+        final getTaskCancel =
+            Uri.parse("${HOST}get-task/$topicId/cancel/$studentNumber");
 
         final todoTaskList = await http.get(getTaskTodo);
         final onProgressTaskList = await http.get(getTaskOnProgress);
         final doneTaskList = await http.get(getTaskDone);
+        final cancelTaskList = await http.get(getTaskCancel);
 
         if (todoTaskList.statusCode == 200) {
           List<dynamic> jsonTodoTaskList =
@@ -98,6 +113,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           List<dynamic> jsonDoneTaskList =
               jsonDecode(utf8.decode(doneTaskList.bodyBytes));
           state.items.add(jsonDoneTaskList);
+        } else {
+          state.items.add([]);
+        }
+        if (cancelTaskList.statusCode == 200) {
+          List<dynamic> jsonCancelTaskList =
+              jsonDecode(utf8.decode(cancelTaskList.bodyBytes));
+          state.items.add(jsonCancelTaskList);
         } else {
           state.items.add([]);
         }
@@ -122,31 +144,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           Uri.parse("${HOST}change-status/${event.taskId}/$newStatus");
       final response = await http.put(changeStatusUrl);
       if (response.statusCode == 200) {
-        // if (oldStatus == "to-do" && newStatus != "to-do") {
-        //   if (newStatus == "on-progress") {
-        //     state.items[1].add(state.items[0][event.index]);
-        //     state.items[0].removeAt(event.index);
-        //   } else {
-        //     state.items[2].add(state.items[0][event.index]);
-        //     state.items[0].removeAt(event.index);
-        //   }
-        // } else if (oldStatus == "on-progress" && newStatus != "on-progress") {
-        //   if (newStatus == "to-do") {
-        //     state.items[0].add(state.items[1][event.index]);
-        //     state.items[1].removeAt(event.index);
-        //   } else {
-        //     state.items[2].add(state.items[1][event.index]);
-        //     state.items[1].removeAt(event.index);
-        //   }
-        // } else if (oldStatus == "done" && newStatus != "done") {
-        //   if (newStatus == "to-do") {
-        //     state.items[0].add(state.items[2][event.index]);
-        //     state.items[2].removeAt(event.index);
-        //   } else {
-        //     state.items[1].add(state.items[2][event.index]);
-        //     state.items[2].removeAt(event.index);
-        //   }
-        // }
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return TaskScreen();

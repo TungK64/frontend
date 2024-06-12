@@ -44,6 +44,9 @@ class _TaskColumnState extends State<TaskColumn> {
           case 'Done':
             items = state.items.isNotEmpty ? state.items[2] : [];
             break;
+          case 'Cancel':
+            items = state.items.isNotEmpty ? state.items[3] : [];
+            break;
           default:
             items = [];
         }
@@ -59,10 +62,14 @@ class _TaskColumnState extends State<TaskColumn> {
           return Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                color: Colors.grey.shade100),
-            width: 300,
+                color: widget.taskStatus == "Done"
+                    ? Colors.green.shade200
+                    : widget.taskStatus == "Cancel"
+                        ? Colors.red.shade100
+                        : Colors.grey.shade100),
+            width: 200,
             child: Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15),
+              padding: const EdgeInsets.only(left: 15.0, right: 15, top: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,10 +113,10 @@ class _TaskColumnState extends State<TaskColumn> {
                           },
                           feedback: Material(
                             child: Padding(
-                              padding: const EdgeInsets.only(bottom: 15.0),
+                              padding: EdgeInsets.zero,
                               child: Container(
-                                height: 80,
-                                width: 300,
+                                height: 90,
+                                width: 200,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                     border: Border.all(
@@ -117,12 +124,27 @@ class _TaskColumnState extends State<TaskColumn> {
                                     color: Colors.lightBlue.shade100),
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 10, left: 10),
-                                  child: Text(displayText),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(displayText),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(items[index]['deadline'])
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                          childWhenDragging: Container(),
+                          childWhenDragging: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 15.0),
                             child: GestureDetector(
@@ -149,15 +171,13 @@ class _TaskColumnState extends State<TaskColumn> {
                                     children: [
                                       Text(
                                         displayText,
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                       const SizedBox(
-                                        height: 5,
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
+                                        height: 10,
                                       ),
                                       Text(items[index]['deadline'])
                                     ],
