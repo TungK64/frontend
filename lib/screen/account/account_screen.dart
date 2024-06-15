@@ -38,7 +38,7 @@ class _AccountScreenState extends State<AccountScreen> {
         return Column(
           children: [
             Container(
-              height: 120,
+              height: 140,
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage("assets/images/account_image.jpg"),
@@ -51,8 +51,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         offset: Offset(0.0, 3))
                   ]),
               child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 20, left: 20, right: 20, bottom: 20),
+                padding: const EdgeInsets.all(20),
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
@@ -172,7 +171,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                       ),
                                       if (state.items.isNotEmpty)
                                         Text(
-                                          state.items['dateOfBirth'],
+                                          _formatDate(state.items['dateOfBirth']),
                                           style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
@@ -342,3 +341,11 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 }
+
+String _formatDate(String date) {
+    // Định dạng đầu vào
+    DateTime parsedDate = DateTime.parse(date);
+    // Định dạng đầu ra
+    DateFormat formatter = DateFormat('dd-MM-yyyy');
+    return formatter.format(parsedDate);
+  }

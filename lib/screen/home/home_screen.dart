@@ -133,17 +133,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: LoadingIcon(),
                 );
               }
-              if (state.items.isEmpty || state.lecName.isEmpty) {
-                return Center(
+              return homePointer
+                ? (state.items.isEmpty || state.lecName.isEmpty)  
+                ? Center(
                   child: Text(
                     "not_register_yet".tr(),
                     style: TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
-                );
-              }
-              return homePointer
-                  ? Column(
+                ) 
+                : Column(
                       children: [
                         GestureDetector(
                           onTap: () {

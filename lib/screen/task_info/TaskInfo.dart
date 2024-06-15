@@ -63,7 +63,7 @@ class _taskInfoState extends State<TaskInfo> {
   void initState() {
     super.initState();
     taskInfo = widget.taskInfo;
-    dropdownValue = statusList.first;
+    dropdownValue = taskInfo["status"];
     priorityText = taskInfo['priority'];
     fileType = [];
     fileName = [];
@@ -446,7 +446,7 @@ class _taskInfoState extends State<TaskInfo> {
                                           ? "To do"
                                           : taskInfo['status'] == "on-progress"
                                               ? "On progress"
-                                              : "Done",
+                                              : taskInfo['status'] == "done" ? "Done" : "Cancel",
                                   onSelected: (String? value) {
                                     // This is called when the user selects an item.
                                     setState(() {
