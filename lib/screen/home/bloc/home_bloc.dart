@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/constants/constant.dart';
+import 'package:pHUST/constants/constant.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

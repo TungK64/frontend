@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/constants/constant.dart';
-import 'package:frontend/screen/components/loading_icon.dart';
-import 'package:frontend/screen/notifications/bloc/notification_bloc.dart';
+import 'package:pHUST/constants/constant.dart';
+import 'package:pHUST/screen/components/loading_icon.dart';
+import 'package:pHUST/screen/notifications/bloc/notification_bloc.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationScreen extends StatefulWidget {

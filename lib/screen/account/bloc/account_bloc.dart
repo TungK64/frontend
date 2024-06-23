@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/constants/constant.dart';
-import 'package:frontend/screen/home/bloc/home_bloc.dart';
+import 'package:pHUST/constants/constant.dart';
+import 'package:pHUST/screen/home/bloc/home_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 

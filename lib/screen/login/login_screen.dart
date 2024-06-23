@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/constants/constant.dart';
-import 'package:frontend/screen/home/home_screen.dart';
+import 'package:pHUST/constants/constant.dart';
+import 'package:pHUST/screen/home/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 

@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/screen/components/loading_icon.dart';
-import 'package:frontend/screen/task/bloc/task_bloc.dart';
-import 'package:frontend/screen/task_info/TaskInfo.dart';
-import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
+import 'package:pHUST/screen/components/loading_icon.dart';
+import 'package:pHUST/screen/task/bloc/task_bloc.dart';
+import 'package:pHUST/screen/task_info/TaskInfo.dart';
+import 'package:pHUST/screen/topic/bloc/topic_bloc.dart';
 
 class TaskColumn extends StatefulWidget {
   final String taskStatus;

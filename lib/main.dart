@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/constants/constant.dart';
-import 'package:frontend/screen/home/home_screen.dart';
-import 'package:frontend/screen/login/login_screen.dart';
+import 'package:pHUST/constants/constant.dart';
+import 'package:pHUST/screen/home/home_screen.dart';
+import 'package:pHUST/screen/login/login_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

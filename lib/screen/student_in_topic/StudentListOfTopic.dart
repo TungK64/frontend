@@ -2,9 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/constants/constant.dart';
-import 'package:frontend/screen/task/TaskScreen.dart';
-import 'package:frontend/screen/topic/bloc/topic_bloc.dart';
+import 'package:pHUST/constants/constant.dart';
+import 'package:pHUST/screen/task/TaskScreen.dart';
+import 'package:pHUST/screen/topic/bloc/topic_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentListOfTopic extends StatefulWidget {

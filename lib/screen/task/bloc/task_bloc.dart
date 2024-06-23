@@ -3,9 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/constants/constant.dart';
-import 'package:frontend/screen/components/loading_icon.dart';
-import 'package:frontend/screen/task/TaskScreen.dart';
+import 'package:pHUST/constants/constant.dart';
+import 'package:pHUST/screen/components/loading_icon.dart';
+import 'package:pHUST/screen/task/TaskScreen.dart';
 import 'package:meta/meta.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';

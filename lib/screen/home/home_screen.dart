@@ -4,13 +4,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/constants/constant.dart';
-import 'package:frontend/screen/account/account_screen.dart';
-import 'package:frontend/screen/components/loading_icon.dart';
-import 'package:frontend/screen/home/bloc/home_bloc.dart';
-import 'package:frontend/screen/notifications/notification_screen.dart';
-import 'package:frontend/screen/setting/setting_screen.dart';
-import 'package:frontend/screen/topic/topic_screen.dart';
+import 'package:pHUST/constants/constant.dart';
+import 'package:pHUST/screen/account/account_screen.dart';
+import 'package:pHUST/screen/components/loading_icon.dart';
+import 'package:pHUST/screen/home/bloc/home_bloc.dart';
+import 'package:pHUST/screen/notifications/notification_screen.dart';
+import 'package:pHUST/screen/setting/setting_screen.dart';
+import 'package:pHUST/screen/topic/topic_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {

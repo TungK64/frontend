@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/constants/constant.dart';
-import 'package:frontend/screen/account/bloc/account_bloc.dart';
-import 'package:frontend/screen/components/loading_icon.dart';
-import 'package:frontend/screen/login/login_screen.dart';
+import 'package:pHUST/constants/constant.dart';
+import 'package:pHUST/screen/account/bloc/account_bloc.dart';
+import 'package:pHUST/screen/components/loading_icon.dart';
+import 'package:pHUST/screen/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountScreen extends StatefulWidget {
