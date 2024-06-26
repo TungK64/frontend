@@ -134,7 +134,7 @@ class SettingScreen extends StatelessWidget {
                     SettingLabel("assets/svg/email.svg", 'support'.tr(),
                         () async {
                       final Uri _url = Uri.parse(
-                          'mailto:appstore@vnpublisher.com?subject=PDF Scanner support the issue');
+                          'mailto:tungvp16@gmail.com?subject=pHUST support the issue');
                       if (!await launchUrl(
                         _url,
                         mode: LaunchMode.platformDefault,
@@ -145,7 +145,7 @@ class SettingScreen extends StatelessWidget {
                     SettingLabel("assets/svg/supports.svg", 'Terms_of_use'.tr(),
                         () async {
                       final Uri _url = Uri.parse(
-                          'https://vnpublisher.com/privacy-policy.html');
+                          'https://play.google.com/about/play-terms/');
                       if (!await launchUrl(
                         _url,
                         mode: LaunchMode.inAppWebView,
@@ -158,7 +158,7 @@ class SettingScreen extends StatelessWidget {
                     SettingLabel("assets/svg/privacy.svg", 'policy'.tr(),
                         () async {
                       final Uri _url = Uri.parse(
-                          'https://vnpublisher.com/privacy-policy.html');
+                          'https://play.google/developer-content-policy/');
                       if (!await launchUrl(
                         _url,
                         mode: LaunchMode.inAppWebView,
@@ -171,7 +171,7 @@ class SettingScreen extends StatelessWidget {
                     SettingLabel("assets/svg/star.svg", 'rate_us'.tr(),
                         () async {
                       String url = Platform.isAndroid
-                          ? 'https://play.google.com/store/apps/details?id=com.flabs.pdf.scanner'
+                          ? 'https://mobile.saucelabs.com/projects/6988682-frontend/builds/10608353'
                           : '';
                       final Uri _url = Uri.parse(url);
                       if (!await launchUrl(
@@ -186,7 +186,7 @@ class SettingScreen extends StatelessWidget {
                     SettingLabel("assets/svg/share.svg", 'share_app'.tr(),
                         () async {
                       String url = Platform.isAndroid
-                          ? 'https://play.google.com/store/apps/details?id=com.flabs.pdf.scanner'
+                          ? 'https://tsfr.io/x5uu5y'
                           : '';
                       Share.share(url);
                     }),

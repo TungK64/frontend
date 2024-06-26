@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pHUST/constants/constant.dart';
 import 'package:pHUST/screen/components/loading_icon.dart';
+import 'package:pHUST/screen/home/home_screen.dart';
 import 'package:pHUST/screen/student_in_topic/StudentListOfTopic.dart';
 import 'package:pHUST/screen/task/TaskScreen.dart';
 import 'package:pHUST/screen/topic/bloc/topic_bloc.dart';
@@ -55,6 +56,9 @@ class _TopicScreenState extends State<TopicScreen> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                            return HomeScreen();
+                          }));
                         },
                         child: const Icon(
                           Icons.arrow_back,
@@ -486,7 +490,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                         height: 20,
                                                       ),
                                                       Text(
-                                                          "${"description".tr()} : ${state.topicList[index]['topicDescription'] ?? " "}"),
+                                                          "${"description".tr()} : ${state.topicList[index]['description'] ?? " "}"),
                                                       const SizedBox(
                                                         height: 20,
                                                       ),
@@ -939,7 +943,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                               height: 20,
                                                             ),
                                                             Text(
-                                                                "${"description".tr()} : ${state.topicList[index]['topicDescription'] ?? " "}"),
+                                                                "${"description".tr()} : ${state.topicList[index]['description'] ?? " "}"),
                                                             const SizedBox(
                                                               height: 20,
                                                             ),
@@ -1271,7 +1275,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                                   fontSize: 15),
                                                             ),
                                                             for(var i = 0; i < state.topicList.length; i++)
-                                                              if(state.studentList[index]['topicList'].contains(state.topicList[i]["topicId"]))
+                                                              if(state.studentList[index]['topicList'] != null && state.studentList[index]['topicList'].contains(state.topicList[i]["topicId"]))
                                                                 Text(state.topicList[i]["topicName"]),
                                                           ],
                                                         ),

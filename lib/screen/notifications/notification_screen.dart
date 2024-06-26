@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pHUST/constants/constant.dart';
 import 'package:pHUST/screen/components/loading_icon.dart';
+import 'package:pHUST/screen/home/home_screen.dart';
 import 'package:pHUST/screen/notifications/bloc/notification_bloc.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,6 +41,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop();
+                     Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return HomeScreen();
+                      }));
                   },
                   child: const Icon(
                     Icons.arrow_back,

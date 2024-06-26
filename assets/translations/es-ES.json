@@ -52,15 +52,21 @@
     "On progress": "En progreso",
     "Done": "Hecho",
     "task": "tarea",
-        "Private to members of its project": "Privado para los miembros de su proyecto",
-        "Assignee": "Asignado",
-        "project": "Proyecto",
-        "Priority": "Prioridad",
-        "Medium": "Medio",
-        "Add more detail for this task": "Agregar más detalle para esta tarea",
-        "Ask a question or post an update...": "Haz una pregunta o publica una actualización...",
-        "High": "Alto",
-        "Low": "Bajo"
+    "Private to members of its project": "Privado para los miembros de su proyecto",
+    "Assignee": "Asignado",
+    "project": "Proyecto",
+    "Priority": "Prioridad",
+    "Medium": "Medio",
+    "Add more detail for this task": "Agregar más detalle para esta tarea",
+    "Ask a question or post an update...": "Haz una pregunta o publica una actualización...",
+    "High": "Alto",
+    "Low": "Bajo",
+    "language": "Idioma",
+    "support": "Soporte",
+    "Terms_of_use": "Términos de uso",
+    "policy": "Política",
+    "rate_us": "Enviar comentario",
+    "share_app": "Compartir aplicación"
     
   }
   

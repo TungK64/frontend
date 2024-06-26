@@ -52,15 +52,20 @@
     "On progress": "進行中",
     "Done": "完了",
     "task": "タスク",
-        "Private to members of its project": "そのプロジェクトのメンバーだけにプライベート",
-        "Assignee": "担当者",
-        "project": "プロジェクト",
-        "Priority": "優先度",
-        "Medium": "中",
-        "Add more detail for this task": "このタスクの詳細を追加",
-        "Ask a question or post an update...": "質問をするか、更新を投稿してください...",
-        "High": "高",
-        "Low": "低"
-
+    "Private to members of its project": "そのプロジェクトのメンバーだけにプライベート",
+    "Assignee": "担当者",
+    "project": "プロジェクト",
+    "Priority": "優先度",
+    "Medium": "中",
+    "Add more detail for this task": "このタスクの詳細を追加",
+    "Ask a question or post an update...": "質問をするか、更新を投稿してください...",
+    "High": "高",
+    "Low": "低",
+    "language": "言語",
+    "support": "サポート",
+    "Terms_of_use": "利用規約",
+    "policy": "ポリシー",
+    "rate_us": "コメントを送る",
+    "share_app": "アプリを共有"
   }
   

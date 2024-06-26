@@ -168,11 +168,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Expanded(
                           child: ListView.builder(
-                            itemCount: state.items.length,
+                            itemCount: state.items.length + 1,
                             controller: _controller,
                             itemBuilder: (context, index) {
                               if (!iconClick) {
-                                return GestureDetector(
+                                if(index < state.items.length) {
+                                  
+                                  return GestureDetector(
                                   onTap: () async {
                                     SharedPreferences prefs =
                                         await SharedPreferences.getInstance();
@@ -248,9 +250,175 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ],
                                   ),
                                 );
+                              } else {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 15, right: 15, bottom: 30, top: 15),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context, 
+                                        builder: ((BuildContext context) {
+                                         return Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          child: SizedBox(
+                                            height: 400,
+                                            width: 250,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 15, right: 15),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 15,),
+                                                  Center(
+                                                    child: Text(
+                                                      "Add Class".tr(),
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 20,
+                                                          color: Colors.black),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 10,),
+                                                  Center(child: Image.asset(
+                                                    "assets/images/add_class.jpg",
+                                                    height: 150,
+                                                    width: 200,
+                                                  ),),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Center(child: Text("Add_class_text".tr(), style: TextStyle(fontWeight: FontWeight.bold),)),
+                                                  const SizedBox(height: 20,),
+                                                  TextField(decoration: InputDecoration(hintText: "Class Code", border: InputBorder.none, hintStyle: TextStyle(color: Colors.grey, fontSize: 20)),),
+                                                  const SizedBox(height: 20,),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                    children: [
+                                                    ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStateColor
+                                                                .resolveWith(
+                                                          (states) {
+                                                            return Colors.white;
+                                                          },
+                                                        ),
+                                                        side:
+                                                            MaterialStateBorderSide
+                                                                .resolveWith(
+                                                          (states) {
+                                                            return const BorderSide(
+                                                                color:
+                                                                    Colors.red);
+                                                          },
+                                                        ),
+                                                        shape: MaterialStateProperty
+                                                            .all<
+                                                                RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(10),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        
+                                                      },
+                                                      child: Text(
+                                                        "Cancel".tr(),
+                                                        style: const TextStyle(
+                                                            color: Colors.red),
+                                                      )),
+                                                      ElevatedButton(
+                                                        style: ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStateColor
+                                                                  .resolveWith(
+                                                            (states) {
+                                                              return Colors.white;
+                                                            },
+                                                          ),
+                                                          side:
+                                                              MaterialStateBorderSide
+                                                                  .resolveWith(
+                                                            (states) {
+                                                              return const BorderSide(
+                                                                  color:
+                                                                      Colors.blue);
+                                                            },
+                                                          ),
+                                                          shape: MaterialStateProperty
+                                                              .all<
+                                                                  RoundedRectangleBorder>(
+                                                            RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(10),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        onPressed: () async {},
+                                                        child: Text(
+                                                          "Create".tr(),
+                                                          style: const TextStyle(
+                                                              color: Colors.blue),
+                                                        )),
+                                                  ],)
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                         ); 
+                                        })
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 90,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              style: BorderStyle.solid),
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: Center(
+                                          child: Column(children: [
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Container(
+                                          width: 30,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(Icons.add_rounded),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          "Add class".tr(),
+                                          style: TextStyle(fontSize: 20),
+                                        )
+                                      ])),
+                                    ),
+                                  )
+                                );
+
+                              }
                               }
                             },
                           ),
+                          
                         ),
                       ],
                     )
