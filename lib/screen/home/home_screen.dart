@@ -418,7 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           height: 10,
                                         ),
                                         Text(
-                                          "Add class".tr(),
+                                          "Add Class".tr(),
                                           style: TextStyle(fontSize: 20),
                                         )
                                       ])),
