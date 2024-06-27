@@ -66,6 +66,12 @@
     "Terms_of_use": "Syarat Penggunaan",
     "policy": "Kebijakan",
     "rate_us": "Kirim komentar",
-    "share_app": "Bagikan aplikasi"
+    "share_app": "Bagikan aplikasi",
+    "Add Class": "Tambah Kelas",
+    "Add_class_text": "Tambah kelas dengan kode kelas",
+    "Your class you search does not exist": "Kelas yang Anda cari tidak ada",
+    "Your are in class already": "Anda sudah berada di dalam kelas",
+    "Successfully added class": "Berhasil menambahkan kelas"
+
   }
   

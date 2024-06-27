@@ -66,6 +66,12 @@
     "Terms_of_use": "Termini di utilizzo",
     "policy": "Politica",
     "rate_us": "Invia commento",
-    "share_app": "Condividi app"
+    "share_app": "Condividi app",
+    "Add Class": "Aggiungi Classe",
+"Add_class_text": "Aggiungi classe tramite codice classe",
+"Your class you search does not exist": "La classe che cerchi non esiste",
+"Your are in class already": "Sei già nella classe",
+"Successfully added class": "Classe aggiunta con successo"
+
   }
   

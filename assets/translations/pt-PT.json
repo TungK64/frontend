@@ -66,6 +66,12 @@
     "Terms_of_use": "Termos de utilização",
     "policy": "Política",
     "rate_us": "Enviar comentário",
-    "share_app": "Partilhar aplicação"
+    "share_app": "Partilhar aplicação",
+    "Add Class": "Adicionar Aula",
+"Add_class_text": "Adicionar aula com o código da aula",
+"Your class you search does not exist": "A aula que procuras não existe",
+"Your are in class already": "Já estás na aula",
+"Successfully added class": "Aula adicionada com sucesso"
+
   }
   

@@ -66,6 +66,12 @@
     "Terms_of_use": "Terma Penggunaan",
     "policy": "Dasar",
     "rate_us": "Hantar komen",
-    "share_app": "Kongsi aplikasi"
+    "share_app": "Kongsi aplikasi",
+    "Add Class": "Tambah Kelas",
+"Add_class_text": "Tambah kelas dengan kod kelas",
+"Your class you search does not exist": "Kelas yang anda cari tidak wujud",
+"Your are in class already": "Anda sudah berada dalam kelas",
+"Successfully added class": "Kelas berjaya ditambah"
+
 }
   

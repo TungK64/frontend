@@ -67,6 +67,11 @@
     "Terms_of_use": "Điều khoản sử dụng",
     "policy": "Chính sách",
     "rate_us": "Gửi đánh giá",
-    "share_app": "Chia sẻ ứng dụng"
+    "share_app": "Chia sẻ ứng dụng",
+"Add Class": "Thêm Lớp",
+"Add_class_text": "Thêm lớp bằng mã lớp",
+"Your class you search does not exist": "Lớp bạn tìm kiếm không tồn tại",
+"Your are in class already": "Bạn đã ở trong lớp này rồi",
+"Successfully added class": "Đã thêm lớp thành công"
 
 }

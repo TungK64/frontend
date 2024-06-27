@@ -66,6 +66,12 @@
     "Terms_of_use": "ข้อกำหนดการใช้บริการ",
     "policy": "นโยบาย",
     "rate_us": "ส่งความคิดเห็น",
-    "share_app": "แชร์แอปพลิเคชัน"
+    "share_app": "แชร์แอปพลิเคชัน",
+    "Add Class": "เพิ่มคลาส",
+"Add_class_text": "เพิ่มคลาสโดยใช้รหัสคลาส",
+"Your class you search does not exist": "คลาสที่คุณค้นหาไม่มีอยู่",
+"Your are in class already": "คุณอยู่ในคลาสนี้อยู่แล้ว",
+"Successfully added class": "เพิ่มคลาสเรียบร้อยแล้ว"
+
   }
   

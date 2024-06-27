@@ -66,6 +66,12 @@
     "Terms_of_use": "이용 약관",
     "policy": "정책",
     "rate_us": "의견 보내기",
-    "share_app": "앱 공유"
+    "share_app": "앱 공유",
+    "Add Class": "클래스 추가",
+"Add_class_text": "클래스 코드를 입력하여 추가",
+"Your class you search does not exist": "검색한 클래스가 존재하지 않습니다",
+"Your are in class already": "이미 클래스에 참여 중입니다",
+"Successfully added class": "클래스가 성공적으로 추가되었습니다"
+
   }
   

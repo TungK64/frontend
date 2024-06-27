@@ -69,7 +69,11 @@
     "Terms_of_use": "Terms of use",
     "policy": "policy",
     "rate_us": "Send comment",
-    "share_app": "Share app"
-
+    "share_app": "Share app",
+    "Add Class" : "Add Class",
+    "Add_class_text": "Add class by class code",
+    "Your class you search does not exist": "Your class you search does not exist",
+    "Your are in class already": "Your are in class already",
+    "Successfully added class": "Successfully added class"
   }
   

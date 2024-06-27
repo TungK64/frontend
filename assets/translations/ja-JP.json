@@ -66,6 +66,12 @@
     "Terms_of_use": "利用規約",
     "policy": "ポリシー",
     "rate_us": "コメントを送る",
-    "share_app": "アプリを共有"
+    "share_app": "アプリを共有",
+    "Add Class": "クラスを追加",
+"Add_class_text": "クラスコードでクラスを追加",
+"Your class you search does not exist": "検索したクラスは存在しません",
+"Your are in class already": "すでにクラスに参加しています",
+"Successfully added class": "クラスが正常に追加されました"
+
   }
   
