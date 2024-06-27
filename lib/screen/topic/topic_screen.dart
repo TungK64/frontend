@@ -504,7 +504,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                           }));
                                     },
                                     child: Container(
-                                      height: 80,
+                                      height: 100,
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(15),
@@ -784,7 +784,7 @@ class _TopicScreenState extends State<TopicScreen> {
                             }));
                           },
                           child: Container(
-                            height: 80,
+                            height: 100,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
                                 color: Colors.grey.shade300),
@@ -957,7 +957,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                                 }));
                                           },
                                           child: Container(
-                                            height: 80,
+                                            height: 100,
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(15),
@@ -1224,7 +1224,7 @@ class _TopicScreenState extends State<TopicScreen> {
                                         padding: const EdgeInsets.only(
                                             left: 15, right: 15, bottom: 20),
                                         child: Container(
-                                          height: 80,
+                                          height: 100,
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(15),

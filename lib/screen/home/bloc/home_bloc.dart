@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pHUST/constants/constant.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeState()) {
     _onHomeInitialEvent();
+    _onAddClassEvent();
   }
 
   _onHomeInitialEvent() {
@@ -68,6 +71,49 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         state.unread = unreadNotiResponse.body;
       }
       emit(state.clone(HomeStatus.initial));
+    });
+  }
+
+  _onAddClassEvent() {
+    on<AddClassEvent>((event, emit) async {
+      emit(state.clone(HomeStatus.loading));
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? role = prefs.getString(ROLE);
+      String? userNumber = prefs.getString(USER_NUMBER);
+
+      final uri = Uri.parse("${HOST}add-class/${event.classCode}/$userNumber/$role");
+      final response = await http.put(uri);
+      state.message = response.body;
+      showDialog(
+        context: event.context,
+        builder:
+            (BuildContext
+                context) {
+          return AlertDialog(
+            title: state.message == "Successfully added class" ? Text(
+                "Success"
+                    .tr()) : Text(
+                "Failed"
+                    .tr()),
+            content: Text(
+                state.message.tr()
+                    ),
+            actions: [
+              ElevatedButton(
+                onPressed:
+                    () {
+                  Navigator.of(
+                          context)
+                      .pop();
+                },
+                child: Text(
+                    "OK"),
+              ),
+            ],
+          );
+        },
+      );
+      emit(state.clone(HomeStatus.addClassDone));
     });
   }
 }

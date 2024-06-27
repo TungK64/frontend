@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool iconClick = false;
   late HomeBloc bloc;
   ScrollController _controller = new ScrollController();
+  final TextEditingController classCodeController = TextEditingController();
   Random random = Random();
   bool homePointer = true;
   Color homeIconColor = Colors.red;
@@ -194,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding: const EdgeInsets.only(
                                             left: 15, right: 15),
                                         child: Container(
-                                          height: 80,
+                                          height: 100,
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(15),
@@ -245,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       const SizedBox(
-                                        height: 10,
+                                        height: 5,
                                       )
                                     ],
                                   ),
@@ -295,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ),
                                                   Center(child: Text("Add_class_text".tr(), style: TextStyle(fontWeight: FontWeight.bold),)),
                                                   const SizedBox(height: 20,),
-                                                  TextField(decoration: InputDecoration(hintText: "Class Code", border: InputBorder.none, hintStyle: TextStyle(color: Colors.grey, fontSize: 20)),),
+                                                  TextField(controller: classCodeController,decoration: InputDecoration(hintText: "Class Code", border: InputBorder.none, hintStyle: TextStyle(color: Colors.grey, fontSize: 20)),),
                                                   const SizedBox(height: 20,),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -329,7 +330,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         ),
                                                       ),
                                                       onPressed: () {
-                                                        
+                                                        classCodeController.clear();
+                                                        Navigator.of(context).pop();
+                                                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                                                            return HomeScreen();
+                                                          }));
                                                       },
                                                       child: Text(
                                                         "Cancel".tr(),
@@ -364,9 +369,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             ),
                                                           ),
                                                         ),
-                                                        onPressed: () async {},
+                                                        onPressed: () async {
+                                                          String classCode = classCodeController.text;
+                                                          if(classCode.isNotEmpty) {
+                                                            bloc.add(AddClassEvent(classCode, context));
+                                                            classCodeController.clear();
+                                                            
+                                                          }
+                                                        },
                                                         child: Text(
-                                                          "Create".tr(),
+                                                          "Add".tr(),
                                                           style: const TextStyle(
                                                               color: Colors.blue),
                                                         )),
@@ -375,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                             ),
                                           ),
-                                         ); 
+                                        ); 
                                         })
                                       );
                                     },
