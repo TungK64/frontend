@@ -6,7 +6,7 @@ const String PROJECT_ID = 'project_id';
 const String TOPIC_ID = 'topic_id';
 const String STUDENT_NUMBER = 'student_number';
 
-const String HOST = 'http://192.168.98.179:8080/api/v1/';
+const String HOST = 'https://562f-116-104-61-90.ngrok-free.app/api/v1/';
 
 const SUPPORT_LANGUAGES = [
   Locale('en', 'US'),
