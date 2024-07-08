@@ -15,6 +15,7 @@ import 'package:pHUST/screen/task/bloc/task_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -176,9 +177,13 @@ class _taskInfoState extends State<TaskInfo> {
                             _selectedDate !=
                                 DateTime.parse(taskInfo['deadline'])) {
                           if (role == "Student") {
-                            if (taskInfo['reporter'] != userNumber) {
+                            final getLecturerByTopicId =
+                                Uri.parse("${HOST}get-lecturer/$topicId");
+
+                            final res = await http.get(getLecturerByTopicId);
+                            if (res.statusCode == 200) {
                               final changeDeadlineUrl = Uri.parse(
-                                  "${HOST}deadline/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
+                                  "${HOST}deadline/${taskInfo['taskID']}/${taskInfo['reporter']}/${res.body}");
                               Map<String, String> bodyData = {
                                 'deadline': _selectedDate.toString()
                               };
@@ -220,8 +225,13 @@ class _taskInfoState extends State<TaskInfo> {
                             taskInfo['attachments'].length !=
                                 amountTaskAttach) {
                           if (role == "Student") {
+                            final getLecturerByTopicId =
+                                Uri.parse("${HOST}get-lecturer/$topicId");
+
+                            final res = await http.get(getLecturerByTopicId);
+
                             final addAttachmentUrl = Uri.parse(
-                                "${HOST}attachments/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
+                                "${HOST}attachments/${taskInfo['taskID']}/$userNumber/${res.body}");
                             List<dynamic> bodyData = taskInfo['attachments'];
                             String jsonBody = jsonEncode(bodyData);
                             await http.post(addAttachmentUrl,
@@ -398,8 +408,7 @@ class _taskInfoState extends State<TaskInfo> {
                                       ),
                                       Text(
                                         _selectedDate == null
-                                            ? tr(
-                                                "Pick a date") // Change this line
+                                            ? tr("Pick a date")
                                             : DateFormat('dd MM yyyy')
                                                 .format(_selectedDate!),
                                         style: _selectedDate == null
@@ -446,7 +455,9 @@ class _taskInfoState extends State<TaskInfo> {
                                           ? "To do"
                                           : taskInfo['status'] == "on-progress"
                                               ? "On progress"
-                                              : taskInfo['status'] == "done" ? "Done" : "Cancel",
+                                              : taskInfo['status'] == "done"
+                                                  ? "Done"
+                                                  : "Cancel",
                                   onSelected: (String? value) {
                                     // This is called when the user selects an item.
                                     setState(() {
@@ -820,7 +831,8 @@ class _taskInfoState extends State<TaskInfo> {
                                                                           'attachments']
                                                                       .add({
                                                                     "fileName":
-                                                                        "image",
+                                                                        image
+                                                                            .name,
                                                                     "taskId":
                                                                         taskInfo[
                                                                             'taskID'],
@@ -829,9 +841,9 @@ class _taskInfoState extends State<TaskInfo> {
                                                                   });
                                                                 });
                                                               } else {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
+                                                                // Navigator.of(
+                                                                //         context)
+                                                                //     .pop();
                                                               }
                                                             },
                                                             child: Row(
@@ -918,7 +930,7 @@ class _taskInfoState extends State<TaskInfo> {
                                                                     "fileName": result
                                                                         .files
                                                                         .single
-                                                                        .extension!,
+                                                                        .name,
                                                                     "taskId":
                                                                         taskInfo[
                                                                             'taskID'],
@@ -927,9 +939,9 @@ class _taskInfoState extends State<TaskInfo> {
                                                                   });
                                                                 });
                                                               } else {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
+                                                                // Navigator.of(
+                                                                //         context)
+                                                                //     .pop();
                                                               }
                                                             },
                                                             child: Row(
@@ -972,15 +984,24 @@ class _taskInfoState extends State<TaskInfo> {
                                         // Thumbnail Image
                                         GestureDetector(
                                           onTap: () async {
-                                            Directory directory =
-                                                await getApplicationCacheDirectory();
-                                            String filePath =
-                                                '${directory.path}/${fileName[index - 1]}';
-                                            File imageFile = File(filePath);
-                                            imageFile.writeAsBytesSync(
-                                                taskInfo['attachments']
-                                                    [index - 1]['fileContent']);
-                                            OpenFile.open(filePath);
+                                            // Directory? directory =
+                                            //     await getDownloadsDirectory();
+                                            if (await Permission.storage
+                                                .request()
+                                                .isGranted) {
+                                              String filePath =
+                                                  '/storage/emulated/0/Download/${fileName[index - 1]}';
+                                              debugPrint(filePath);
+                                              File imageFile = File(filePath);
+                                              imageFile.writeAsBytesSync(
+                                                  base64Decode(
+                                                      taskInfo['attachments']
+                                                              [index - 1]
+                                                          ['fileContent']));
+                                              OpenFile.open(filePath);
+                                            }
+                                            // String filePath =
+                                            //     '${directory?.path}/${fileName[index - 1]}';
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(
@@ -1195,9 +1216,7 @@ class _taskInfoState extends State<TaskInfo> {
                                           notification['message']
                                                   .indexOf("comment") +
                                               9,
-                                          notification['message'].indexOf(
-                                                  taskInfo['taskName']) -
-                                              5))
+                                          notification['message'].length - 2))
                                     ],
                                   ),
                                 ); // Handle other types if necessary
@@ -1241,15 +1260,24 @@ class _taskInfoState extends State<TaskInfo> {
                                 await SharedPreferences.getInstance();
                             String? role = prefs.getString(ROLE);
                             String? userNumber = prefs.getString(USER_NUMBER);
+                            String? topicId = prefs.getString(TOPIC_ID);
                             String? studentNumber =
                                 prefs.getString(STUDENT_NUMBER);
                             if (role == "Student") {
-                              final addCommentUrl = Uri.parse(
-                                  "${HOST}comment/${taskInfo['taskID']}/$userNumber/${taskInfo['reporter']}");
-                              String jsonComment = jsonEncode(comment);
-                              await http.post(addCommentUrl,
-                                  headers: {"Content-Type": "application/json"},
-                                  body: jsonComment);
+                              final getLecturerByTopicId =
+                                  Uri.parse("${HOST}get-lecturer/$topicId");
+
+                              final res = await http.get(getLecturerByTopicId);
+                              if (res.statusCode == 200) {
+                                final addCommentUrl = Uri.parse(
+                                    "${HOST}comment/${taskInfo['taskID']}/$userNumber/${res.body}");
+                                String jsonComment = jsonEncode(comment);
+                                await http.post(addCommentUrl,
+                                    headers: {
+                                      "Content-Type": "application/json"
+                                    },
+                                    body: jsonComment);
+                              }
                             } else {
                               final addCommentUrl = Uri.parse(
                                   "${HOST}comment/${taskInfo['taskID']}/$userNumber/$studentNumber");
