@@ -388,10 +388,17 @@ class _TaskScreenState extends State<TaskScreen> {
                                                     var createTaskUrl;
                                                     if (role == "Lecture") {
                                                       createTaskUrl = Uri.parse(
-                                                          "${HOST}create-task/$topicId/$userNumber/$studentNumber");
+                                                          "${HOST}create-task/$topicId/$userNumber/$studentNumber/$role");
                                                     } else {
+                                                      final getLecturerByTopicId =
+                                                          Uri.parse(
+                                                              "${HOST}get-lecturer/$topicId");
+
+                                                      final res = await http.get(
+                                                          getLecturerByTopicId);
+
                                                       createTaskUrl = Uri.parse(
-                                                          "${HOST}create-task/$topicId/$userNumber/$userNumber");
+                                                          "${HOST}create-task/$topicId/$userNumber/${res.body}/$role");
                                                     }
                                                     Map<String, dynamic> data =
                                                         {"taskName": taskName};
